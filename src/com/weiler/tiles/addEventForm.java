@@ -7,8 +7,10 @@ import com.codename1.io.NetworkManager;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.HashMap;
-
-
+import com.codename1.io.JSONParser;
+import java.io.InputStreamReader;
+import java.io.ByteArrayInputStream;
+import com.codename1.processing.Result;
 
 
 
@@ -26,7 +28,8 @@ public class addEventForm {
 
     public Form newForm()
     {
-
+        Form helloForm = new Form();
+        return helloForm;
     }
 
     String[] searchLocations(String input) {

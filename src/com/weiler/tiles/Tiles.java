@@ -14,7 +14,6 @@ import com.codename1.ui.util.UITimer;
 import java.io.IOException;
 import com.codename1.ui.AutoCompleteTextField;
 
-
 import com.codename1.ui.spinner.Picker;
 import java.util.Date;
 /**
@@ -55,7 +54,6 @@ public class Tiles {
         AutoCompleteTextField locationAC = new AutoCompleteTextField();
 
         locationAC.setMinimumElementsShownInPopup(5);
-        locationAC.
         Picker datePicker = new Picker();
         datePicker.setType(Display.PICKER_TYPE_DATE);
         Picker timePicker = new Picker();
@@ -69,24 +67,7 @@ public class Tiles {
         return eventForm;
     }
 
-    String[] searchLocations(String input) {
-        try {
-            if(input.length() > 0) {
-                ConnectionRequest r = new ConnectionRequest();
-                r.setPost(false);
-                r.setUrl("https://maps.googleapis.com/maps/api/place/autocomplete/json");
-                r.addArgument("key", HTML_API_KEY);
-                r.addArgument("input", input);
-                NetworkManager.getInstance().addToQueueAndWait(r);
-                Map<String,Object> result = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData()), "UTF-8"));
-                String[] res = Result.fromContent(result).getAsStringArray("//description");
-                return res;
-            }
-        } catch(Exception err) {
-            Log.e(err);
-        }
-        return null;
-    }
+
 
     public void stop() {
         current = getCurrentForm();
