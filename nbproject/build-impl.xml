@@ -244,7 +244,7 @@ is divided into following sections:
         </macrodef>
     </target>
     <target depends="-init-ap-cmdline-properties" if="ap.supported.internal" name="-init-macrodef-javac-with-processors">
-        <macrodef name="javac" uri="http://www.netbeans.org/ns/j2se-project/3">
+        <property file="codenameone_kotlin.properties"/><typedef resource="org/jetbrains/kotlin/ant/antlib.xml" classpath="${kotlin.lib}/kotlin-ant.jar"/><macrodef name="javac" uri="http://www.netbeans.org/ns/j2se-project/3">
             <attribute default="${src.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}" name="classpath"/>
@@ -280,12 +280,12 @@ is divided into following sections:
                     <compilerarg path="@{apgeneratedsrcdir}"/>
                     <compilerarg line="${ap.proc.none.internal}"/>
                     <customize/>
-                </javac>
+                <withKotlin/></javac>
             </sequential>
         </macrodef>
     </target>
     <target depends="-init-ap-cmdline-properties" name="-init-macrodef-javac-without-processors" unless="ap.supported.internal">
-        <macrodef name="javac" uri="http://www.netbeans.org/ns/j2se-project/3">
+        <property file="codenameone_kotlin.properties"/><typedef resource="org/jetbrains/kotlin/ant/antlib.xml" classpath="${kotlin.lib}/kotlin-ant.jar"/><macrodef name="javac" uri="http://www.netbeans.org/ns/j2se-project/3">
             <attribute default="${src.dir}" name="srcdir"/>
             <attribute default="${build.classes.dir}" name="destdir"/>
             <attribute default="${javac.classpath}" name="classpath"/>
@@ -313,7 +313,7 @@ is divided into following sections:
                     <compilerarg line="${javac.profile.cmd.line.arg}"/>
                     <compilerarg line="${javac.compilerargs}"/>
                     <customize/>
-                </javac>
+                <withKotlin/></javac>
             </sequential>
         </macrodef>
     </target>

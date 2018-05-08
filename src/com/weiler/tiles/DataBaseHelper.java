@@ -144,9 +144,9 @@ public class DataBaseHelper {
     public ArrayList<Map<String, Object>> getPosts(String className){
         try {
             ConnectionRequest r = new ConnectionRequest();
-            r.setUrl("http://tutormilton.ma1geek.org/getPosts.php");
+            r.setUrl("http://tiles.epizy.com/getEvents.php");
             r.setPost(false);
-            r.addArgument("course",className);
+            r.addArgument("schoolID",className);
             NetworkManager.getInstance().addToQueueAndWait(r);
             Map<String,Object> result = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData()), "UTF-8"));
             ArrayList<Map<String, Object>> content = (ArrayList<Map<String, Object>>)result.get("root");
@@ -235,14 +235,17 @@ public class DataBaseHelper {
          */
     }
     public boolean addPost(Map<String,String> params){
+        String s="http://tiles.epizy.com/addEvent.php";
         try {
             ConnectionRequest r = new ConnectionRequest();
-            r.setUrl("http://tutormilton.ma1geek.org/addPost.php");
+            r.setUrl("http://tiles.epizy.com/addEvent.php");
             r.setPost(true);
             for(String key: params.keySet())
             {
                 r.addArgument(key,params.get(key));
+
             }
+            System.out.println(r.getUrl());
             NetworkManager.getInstance().addToQueueAndWait(r);
             Map<String,Object> result = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData()), "UTF-8"));
             return Boolean.parseBoolean(result.get("worked").toString());
@@ -251,6 +254,9 @@ public class DataBaseHelper {
             return false;
         }
     	/* EXAMPLE
+
+    	$sql = "INSERT INTO Events (EventID, Title, Latitude, Longitude, Location, Description, UserPosted, IfResponded, Responders, ImageURL, Date, Time, Organization, SchoolID)
+VALUES ('$eventID', '$title', '$latitude', '$longitude', '$location', '$description', '$userPosted', '$ifResponded', '$responders', '$imageURL', '$date','$time','$organization', '$schoolID)";
     	 DatabaseHelper base = new DatabaseHelper();
     	 Date d = new Date();
          Map<String,String> params = new HashMap<String, String>();

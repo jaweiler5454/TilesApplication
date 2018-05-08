@@ -7,7 +7,7 @@
         
     <project name="Tiles" default="default" basedir=".">
     <description>Builds, tests, and runs the project Tiles.</description>
-    <import file="nbproject/build-impl.xml"/>
+    <property file="codenameone_kotlin.properties"/><typedef resource="org/jetbrains/kotlin/ant/antlib.xml" classpath="${kotlin.lib}/kotlin-ant.jar"/><import file="nbproject/build-impl.xml"/>
     <property file="codenameone_settings.properties"/>
     <property name="automated" value="false" />
     <taskdef name="codeNameOne" classname="com.codename1.build.client.CodeNameOneBuildTask" classpath="CodeNameOneBuildClient.jar"/>
@@ -27,7 +27,7 @@
             bootclasspath="CLDC11.jar" excludes="${excludes}"
             classpath="${javac.classpath}:${build.classes.dir}">
             <src path="${test.src.dir}"/>
-        </javac>        
+        <withKotlin/></javac>        
         <prepareTests classesDir="${build.classes.dir}" testClassesDir="${build.test.classes.dir}" seJar="JavaSE.jar" metaDataFile="${build.test.classes.dir}/tests.dat" />
         <jar jarfile="dist/unitTests.jar">
             <fileset dir="${build.classes.dir}"/>
@@ -56,7 +56,7 @@
             bootclasspath="lib/CLDC11.jar" excludes="${excludes}"
             classpath="${javac.classpath}:${build.classes.dir}">
             <src path="${src.dir}"/>
-        </javac>        
+        <withKotlin/></javac>        
     </target>
 
     <target name="-post-compile">
@@ -481,7 +481,7 @@
             classpath="${javac.classpath}:${build.classes.dir}">
             <src path="native/javase"/>
             <src path="lib/impl/native/javase"/>
-        </javac>        
+        <withKotlin/></javac>        
     </target>
 
     <target name="-post-clean" depends="refresh-libs-impl">
