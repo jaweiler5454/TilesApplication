@@ -3,15 +3,16 @@ package com.weiler.tiles;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/*import com.cloudinary.Cloudinary;
+import com.cloudinary.Cloudinary;
 import com.cloudinary.Transformation;
 import com.cloudinary.utils.ObjectUtils;
-*/
+
 import com.codename1.io.ConnectionRequest;
 import com.codename1.io.JSONParser;
 import com.codename1.io.Log;
@@ -22,44 +23,12 @@ import com.codename1.ui.Label;
 
 public class DataBaseHelper {
 
+
     public DataBaseHelper(){
 
     }
     public void testMethods(){
-        System.out.println(getUserByUsername("scottyc"));
-        System.out.println(getUserByID("123456"));
-        System.out.println(getPosts("Programming 2"));
-        System.out.println(getComments("12345678"));
-        Map<String,String> params = new HashMap<String, String>();
-        params.put("id", "111222");
-        params.put("username", "helloWorld");
-        params.put("name", "Test Hello");
-        params.put("class", "2018");
-        params.put("email", "test_hello18@milton.edu");
-        params.put("rating", "2");
-        params.put("bio", "i am a test user");
-        params.put("classes", "|Programming 2|English Workshop|");
-        System.out.println(addUser(params));
-        Map<String,String> params1 = new HashMap<String, String>();
-        params1.put("username", "scottyc");
-        params1.put("comment", "my test comment");
-        params1.put("qid", "12345678");
-        System.out.println(addComment(params1));
-        Date d = new Date();
-        long time = d.getTime();
-        Map<String,String> params11 = new HashMap<String, String>();
-        params11.put("username", "scottyc");
-        params11.put("title", "my test post");
-        params11.put("body", "hey guys whats up!!!!!!!!");
-        params11.put("qid", time + "");
-        params11.put("pic", "www.memes.com/asfdfsa");
-        params11.put("picWidth", "200");
-        params11.put("picHeight", "200");
-        params11.put("course", "Programming 2");
-        System.out.println(addPost(params11));
-        System.out.println(addLike(time + "","scottyc"));
-        System.out.println(removeLike(time + "","scottyc"));
-        System.out.println(deletePost(time + ""));
+
 
     }
     /* EXAMPLE
@@ -84,7 +53,7 @@ public class DataBaseHelper {
         System.out.println(base.getUserByUsername("scottyc"));
         */
     }
-    /*
+
     public Image getImage(String url, int width, int height)
     {
         Image placeholder = Image.createImage(width, height);
@@ -101,7 +70,7 @@ public class DataBaseHelper {
       DatabaseHelper base = new DatabaseHelper();
     System.out.println(base.getImage("http://res.cloudinary.com/ask-milton/image/upload/v1494548819/vils6bur962awvvapqe4.png", 300, 300));
  */
-    /*
+
     public Map<String, Object> uploadImage(String filePath){
         try {
             Map<String,Object> uploadResult = getCloud().uploader().upload(filePath, ObjectUtils.emptyMap());
@@ -114,15 +83,23 @@ public class DataBaseHelper {
     /* EXAMPLE
           DatabaseHelper base = new DatabaseHelper();
         System.out.println(base.uploadImage(filePath).get("url").toString());
-
+*/
     private Cloudinary getCloud(){
         Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
-                "cloud_name", "ask-milton",
-                "api_key", "571639764722334",
-                "api_secret", "3BKj-omKqS4Gs8WtQZcnJFSbpN4"));
+                "cloud_name", "tiles",
+                "api_key", "817285289173163",
+                "api_secret", "H9YMuHi-ZYdtLAMfyXpfbQFZ4OI"));
         return(cloudinary);
     }
-    */
+
+    public ArrayList getEventIDs()
+    {
+        ArrayList hello = new ArrayList();
+
+
+        return hello;
+    }
+
     public Map<String, Object> getUserByID(String id){
         try {
             ConnectionRequest r = new ConnectionRequest();
@@ -144,11 +121,11 @@ public class DataBaseHelper {
     public ArrayList<Map<String, Object>> getPosts(String className){
         try {
             ConnectionRequest r = new ConnectionRequest();
-            r.setUrl("http://tiles.epizy.com/getEvents.php");
+            r.setUrl("http://tilessubdomain.ma1geek.org/getEvents.php");
             r.setPost(false);
             r.addArgument("schoolID",className);
             NetworkManager.getInstance().addToQueueAndWait(r);
-            Map<String,Object> result = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData()), "UTF-8"));
+            Map<String,Object> result = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData())));
             ArrayList<Map<String, Object>> content = (ArrayList<Map<String, Object>>)result.get("root");
             return content;
         } catch(Exception err) {
@@ -235,17 +212,17 @@ public class DataBaseHelper {
          */
     }
     public boolean addPost(Map<String,String> params){
-        String s="http://tiles.epizy.com/addEvent.php";
         try {
             ConnectionRequest r = new ConnectionRequest();
-            r.setUrl("http://tiles.epizy.com/addEvent.php");
+            r.setUrl("http://tilessubdomain.ma1geek.org/addEvent.php");
             r.setPost(true);
+
             for(String key: params.keySet())
             {
                 r.addArgument(key,params.get(key));
 
             }
-            System.out.println(r.getUrl());
+            System.out.println(params);
             NetworkManager.getInstance().addToQueueAndWait(r);
             Map<String,Object> result = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData()), "UTF-8"));
             return Boolean.parseBoolean(result.get("worked").toString());
@@ -272,9 +249,9 @@ VALUES ('$eventID', '$title', '$latitude', '$longitude', '$location', '$descript
     public boolean deletePost(String qid){
         try {
             ConnectionRequest r = new ConnectionRequest();
-            r.setUrl("http://tutormilton.ma1geek.org/deletePost.php");
+            r.setUrl("http://tilessubdomain.ma1geek.org/deleteEvent.php");
             r.setPost(true);
-            r.addArgument("qid", qid);
+            r.addArgument("eventID", qid);
             NetworkManager.getInstance().addToQueueAndWait(r);
             Map<String,Object> result = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData()), "UTF-8"));
             return Boolean.parseBoolean(result.get("worked").toString());
@@ -325,4 +302,5 @@ VALUES ('$eventID', '$title', '$latitude', '$longitude', '$location', '$descript
          System.out.println(base.removeLike("1494292552458","scottyc"));
          */
     }
+
 }

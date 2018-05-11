@@ -7,7 +7,10 @@ import com.codename1.ui.*;
 import com.codename1.ui.layouts.FlowLayout;
 import com.codename1.ui.layouts.GridLayout;
 import com.codename1.ui.layouts.LayeredLayout;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Map;
 
 
 public class TileForm {
@@ -17,20 +20,29 @@ public class TileForm {
 
     }
 
+    private DataBaseHelper globalBase = new DataBaseHelper();
+
     public Form formCreated()
     {
         Form formReturned = new Form();
-        ArrayList tileIDsByOrg = new ArrayList();
-        ArrayList<String> textOfTile = new ArrayList<String>();
-        ArrayList<TextField> titleOfTile = new ArrayList<TextField>();
-        for(int i=0; i<titleOfTile.size(); i++)
+        ArrayList<Map<String,Object>> tilesByOrg = new ArrayList<Map<String,Object>>();
+        ArrayList<Button> tilesButtons = new ArrayList<Button>();
+        for(int i=0; i<globalBase.getPosts("milton_academy").size(); i++)
         {
+            tilesByOrg.add(globalBase.getPosts("milton_academy").get(i));
+            tilesButtons.add(new Button(tilesByOrg.get(i).get("Title").toString()));
+            tilesButtons.get(i).addActionListener(evt -> {
+                //Form.show
+            });
+
 
         }
-        ArrayList<Button> tileButtons = new ArrayList<Button>();
-        for(int i=0; i<tileIDsByOrg.size(); i++) {
+
+        formReturned.setLayout(new GridLayout(tilesByOrg.size() , 2)); //Create GridLayout
+        for(int i=0; i<tilesButtons.size(); i++)
+        {
+            formReturned.add(tilesButtons.get(i));
         }
-;       formReturned.setLayout(new GridLayout(tileIDsByOrg.size() , 2)); //Create GridLayout
         return formReturned;
     }
 

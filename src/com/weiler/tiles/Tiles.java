@@ -39,6 +39,7 @@ public class Tiles {
     private addEventForm form1 = new addEventForm();
     private Form createEvent;
     private DataBaseHelper globalBase = new DataBaseHelper();
+    public Cloudinary cloudinary;
 
 
     public void init(Object context) {
@@ -56,7 +57,7 @@ public class Tiles {
         imageURL = Preferences.get("imageURL", null);
 
         //CLOUDINARY INIT
-        Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+        cloudinary = new Cloudinary(ObjectUtils.asMap(
                 "cloud_name", "tiles",
                 "api_key", "817285289173163",
                 "api_secret", "H9YMuHi-ZYdtLAMfyXpfbQFZ4OI"));
@@ -65,20 +66,22 @@ public class Tiles {
         cloudinary.config.privateCdn = false;
 
 
-        System.out.println("Posts"+ globalBase.getPosts("milton_academy"));
-        createEvent = form1.newForm();
 
     }
     
     public void start() {
-        if(current != null){
+        if (current != null) {
             current.show();
             return;
         }
         Form hi = new Form("Welcome", new BorderLayout(BorderLayout.CENTER_BEHAVIOR_CENTER_ABSOLUTE));
 
         //showLoginForm();
-        createEvent.show();
+        System.out.println(globalBase.getPosts("milton_academy"));
+        TileForm tileFormTool = new TileForm();
+        addEventForm evtFormTool = new addEventForm();
+        evtFormTool.imageCreation().show();
+        //tileFormTool.formCreated().show();
     }
 
     private void showLoginForm() {

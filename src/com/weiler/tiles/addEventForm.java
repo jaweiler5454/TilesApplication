@@ -1,16 +1,20 @@
 package com.weiler.tiles;
 
-import com.codename1.io.Log;
+import com.cloudinary.utils.ObjectUtils;
+import com.codename1.io.*;
 import com.codename1.ui.*;
-import com.codename1.io.ConnectionRequest;
-import com.codename1.io.NetworkManager;
+
+import java.awt.*;
+import java.awt.Font;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.HashMap;
-import com.codename1.io.JSONParser;
 import java.io.InputStreamReader;
 import java.io.ByteArrayInputStream;
 import com.codename1.processing.Result;
+import com.codename1.ui.Button;
+import com.codename1.ui.TextArea;
+import com.codename1.ui.TextField;
 import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.plaf.Style;
@@ -19,6 +23,22 @@ import com.codename1.maps.Coord;
 import java.util.ArrayList;
 import com.codename1.ui.spinner.Picker;
 import java.util.Date;
+import com.codename1.ui.Container;
+import com.codename1.ui.Component;
+import com.codename1.ui.Label;
+
+import com.codename1.ui.layouts.TextModeLayout;
+import com.codename1.ui.PickerComponent;
+import com.codename1.ui.TextComponent;
+import com.codename1.ui.table.TableLayout;
+import com.codename1.ui.FontImage;
+import com.codename1.ui.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
+import com.codename1.ui.list.MultiList;
+import java.util.Hashtable;
+import java.util.Random;
 
 
 
@@ -34,16 +54,27 @@ public class addEventForm {
     private Coord coordinates = new Coord(0,0);
     private String formattedLng = "";
     private String formattedLat = "";
+    private DataBaseHelper globalBase = new DataBaseHelper();
+    private Map<String,String> params = new HashMap<String, String>();
+
 
     public addEventForm()
     {
+
 
     }
 
     public Form newForm()
     {
-        Form helloForm = new Form();
-        helloForm.setLayout(new BoxLayout(BoxLayout.Y_AXIS));
+        TextModeLayout textModeLayout = new TextModeLayout(3,2);
+        Form helloForm = new Form("Add an Event", textModeLayout);
+
+        TextComponent title = new TextComponent().label("Title");
+        TextComponent organization = new TextComponent().label("Organization");
+        TextComponent description = new TextComponent().label("Description").multiline(true);
+        PickerComponent timeComponent = PickerComponent.createDateTime(new Date()).label("Date and Time");
+        Container forAc = new Container();
+
 
         final DefaultListModel<String> options = new DefaultListModel<>();
         AutoCompleteTextField ac = new AutoCompleteTextField(options) {
@@ -66,13 +97,6 @@ public class addEventForm {
 
         };
 
-        TextField addTitle = new TextField("Add a Title");
-        TextArea addDescription = new TextArea("Describe your event");
-        TextField addOrganization = new TextField("What is your organization?");
-
-        String titleText = addTitle.getText();
-        String descriptionText = addDescription.getText();
-        String organizationText = addOrganization.getText();
 
         ac.setMinimumElementsShownInPopup(5);
         Style so = UIManager.getInstance().getComponentStyle("TitleCommand");
@@ -80,62 +104,131 @@ public class addEventForm {
         String getAddress = new String();
         getAddress = ac.getText();
         System.out.println(getAddress);
+        forAc.add(new Label("Location")).add(ac);
 
-        finalAddress[0] = ac.getText();
-        final String finalAddressTrue = finalAddress[0];
-        //coordinates = geocode(finalAddressTrue);
-        Double lng = coordinates.getLongitude();
-        Double lat = coordinates.getLatitude();
-        formattedLng = lng.toString();
-        formattedLat = lat.toString();
 
-        Picker datePicker = new Picker();
-        datePicker.setType(Display.PICKER_TYPE_DATE);
-        Picker timePicker = new Picker();
-        timePicker.setType(Display.PICKER_TYPE_TIME);
-        datePicker.setDate(new Date());
-        System.out.println(datePicker.getValue());
 
 
         Button addData = new Button("Add New Tile");
         addData.addActionListener(evt -> {
             System.out.println("hello");
             DataBaseHelper base = new DataBaseHelper();
-            Map<String,String> params = new HashMap<String, String>();
-            params.put("eventID", "1234567");
-            //params.put("title", titleText);
-            params.put("title", "a god");
-            //params.put("latitude", formattedLat);
-            params.put("latitude", "20");
-            //params.put("longitude", formattedLng);
-            params.put("longitude", "20");
-            //params.put("location", finalAddressTrue);
-            params.put("location", "the spot");
-            //params.put("description", descriptionText);
-            params.put("description", "sup my dudes");
-            params.put("userPosted", "null for now");
-            params.put("ifResponded", "true");
-            params.put("responders", "");
-            params.put("imageURL", "");
-           // params.put("date", datePicker.getValue().toString());
-            params.put("date", "oclock");
-            //params.put("time", timePicker.getValue().toString());
-            params.put("time", "hello");
-            //params.put("organization", organizationText);
-            params.put("organization", "hello");
+
+            finalAddress[0] = ac.getText();
+            final String finalAddressTrue = finalAddress[0];
+            coordinates = geocode(finalAddressTrue);
+            Double lng = coordinates.getLongitude();
+            Double lat = coordinates.getLatitude();
+            formattedLng = lng.toString();
+            formattedLat = lat.toString();
+
+            params.put("eventID", "1");
+            params.put("title", title.getText());
+            params.put("latitude", formattedLat);
+            params.put("longitude", formattedLng);
+            params.put("location", finalAddressTrue);
+            params.put("description", description.getText());
+            params.put("userPosted", "jaweiler5454@gmail.com");
+            params.put("responses", "10");
             params.put("schoolID", "milton_academy");
-            base.addPost(params);
+            //params.put("imageURL", "milton.edu");
+            params.put("date", "");
+            params.put("time", "");
+            params.put("organization", organization.getText());
+
         });
 
 
-        helloForm.add(addTitle).add(addOrganization).add(addDescription).add(ac).add(datePicker).add(timePicker).add(addData);
+        helloForm.add(title).add(organization).add(timeComponent).add(description).add(forAc);
 
         return helloForm;
 
     }
 
 
+    public Form imageCreation()
+    {
+        Form imageForm = new Form();
+        Button browse = new Button();
+        final Image[] formImg = {null};
+        browse.addActionListener(evt -> {
+            Display.getInstance().openGallery(event ->{
+                if (event != null && event.getSource() != null) {
+                    String filePath = (String) event.getSource();
+                    System.out.println(filePath);
+                    int fileNameIndex = filePath.lastIndexOf("/") + 1;
+                    String fileName = filePath.substring(fileNameIndex);
+                    params.put("imageURL", globalBase.uploadImage(filePath).get("url").toString());
+                    Image img = null;
+                    img = globalBase.getImage(params.get("imageURL"), Display.getInstance().getDisplayWidth(), Display.getInstance().getDisplayHeight());
 
+                    formImg[0] = img;
+                    // Do something, add to List
+                }
+
+            }, Display.GALLERY_IMAGE);
+        });
+
+        imageForm.add(formImg[0]).add(browse);
+
+
+        return imageForm;
+    }
+
+  // HERE IS THE ID GENERATOR METHODS
+
+    final String charList = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    final int idLength = 10;
+
+    private int getRandomNumber() {
+        int randomInt = 0;
+        Random randomGenerator = new Random();
+        randomInt = randomGenerator.nextInt(charList.length());
+        if (randomInt - 1 == -1) {
+            return randomInt;
+        } else {
+            return randomInt - 1;
+        }
+    }
+
+
+    public String standIDGenerator()
+    {
+        StringBuffer randStr = new StringBuffer();
+        for(int i=0; i<idLength; i++){
+            int number = getRandomNumber();
+            char ch = charList.charAt(number);
+            randStr.append(ch);
+        }
+
+        return randStr.toString();
+    }
+
+
+
+    boolean checkID(String prelimID)
+    {
+        ArrayList basedIds = new ArrayList();
+        for(int i=0; i<globalBase.getPosts("milton_academy").size(); i++) {
+            basedIds.add(globalBase.getPosts("milton_academy").get(i).get("EventID").toString());
+        }
+
+          if(basedIds.contains(prelimID))
+          {
+              return false;
+          }
+
+          else
+          {
+            return true;
+          }
+
+    }
+
+
+
+
+/// GEOCODING PROCEDURES BELOW
     public String[] searchLocations(String input) {
         try {
             if(input.length() > 0) {
@@ -190,8 +283,6 @@ public class addEventForm {
         }
 
         return null;
-
-
 
     }
 }
