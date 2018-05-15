@@ -16,6 +16,7 @@ import com.codename1.ui.Button;
 import com.codename1.ui.TextArea;
 import com.codename1.ui.TextField;
 import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.layouts.BorderLayout;
 import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.plaf.Style;
 import com.codename1.ui.plaf.UIManager;
@@ -39,6 +40,8 @@ import java.io.IOException;
 import com.codename1.ui.list.MultiList;
 import java.util.Hashtable;
 import java.util.Random;
+import com.codename1.components.ImageViewer;
+
 
 
 
@@ -56,6 +59,8 @@ public class addEventForm {
     private String formattedLat = "";
     private DataBaseHelper globalBase = new DataBaseHelper();
     private Map<String,String> params = new HashMap<String, String>();
+    private String globalFilePath;
+    private Image globalImage = null;
 
 
     public addEventForm()
@@ -122,7 +127,7 @@ public class addEventForm {
             formattedLng = lng.toString();
             formattedLat = lat.toString();
 
-            params.put("eventID", "1");
+            params.put("eventID", standIDGenerator());
             params.put("title", title.getText());
             params.put("latitude", formattedLat);
             params.put("longitude", formattedLng);
@@ -135,7 +140,7 @@ public class addEventForm {
             params.put("date", "");
             params.put("time", "");
             params.put("organization", organization.getText());
-
+            imageCreation().show();
         });
 
 
@@ -148,28 +153,39 @@ public class addEventForm {
 
     public Form imageCreation()
     {
-        Form imageForm = new Form();
-        Button browse = new Button();
-        final Image[] formImg = {null};
+        System.out.println(params.get("imageURL"));
+        Form imageForm = new Form("Choose an Image for Your Tile" , new BorderLayout());
+        Button browse = new Button("Browse for an Image");
+        imageForm.add(BorderLayout.NORTH, browse);
         browse.addActionListener(evt -> {
             Display.getInstance().openGallery(event ->{
                 if (event != null && event.getSource() != null) {
                     String filePath = (String) event.getSource();
-                    System.out.println(filePath);
+                    globalFilePath = filePath;
                     int fileNameIndex = filePath.lastIndexOf("/") + 1;
                     String fileName = filePath.substring(fileNameIndex);
-                    params.put("imageURL", globalBase.uploadImage(filePath).get("url").toString());
                     Image img = null;
-                    img = globalBase.getImage(params.get("imageURL"), Display.getInstance().getDisplayWidth(), Display.getInstance().getDisplayHeight());
+                    try {
+                        img = Image.createImage(FileSystemStorage.getInstance().openInputStream(filePath));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    globalImage = img;
+                    ImageViewer iv = new ImageViewer(img);
+                    imageForm.add(BorderLayout.CENTER, iv);
 
-                    formImg[0] = img;
                     // Do something, add to List
                 }
 
             }, Display.GALLERY_IMAGE);
         });
-
-        imageForm.add(formImg[0]).add(browse);
+        Button selectImage = new Button("Done");
+        selectImage.addActionListener(evt -> {
+            params.put("imageURL", globalBase.uploadImage(globalFilePath).get("url").toString());
+            globalImage = globalBase.getImage(params.get("imageURL"), Display.getInstance().getDisplayWidth()*(3/4), Display.getInstance().getDisplayHeight()*(3/4));
+            globalBase.addPost(params);
+        });
+        imageForm.add(BorderLayout.SOUTH, selectImage);
 
 
         return imageForm;

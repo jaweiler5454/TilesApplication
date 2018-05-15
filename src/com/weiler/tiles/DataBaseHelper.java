@@ -84,6 +84,7 @@ public class DataBaseHelper {
           DatabaseHelper base = new DatabaseHelper();
         System.out.println(base.uploadImage(filePath).get("url").toString());
 */
+
     private Cloudinary getCloud(){
         Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
                 "cloud_name", "tiles",

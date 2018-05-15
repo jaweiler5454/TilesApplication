@@ -40,6 +40,8 @@ public class Tiles {
     private Form createEvent;
     private DataBaseHelper globalBase = new DataBaseHelper();
     public Cloudinary cloudinary;
+    public int displayWidth;
+    public int displayHeight;
 
 
     public void init(Object context) {
@@ -65,6 +67,8 @@ public class Tiles {
         // Disable private CDN URLs as this doesn't seem to work with free accounts
         cloudinary.config.privateCdn = false;
 
+        displayWidth = Display.getInstance().getDisplayWidth();
+        displayHeight = Display.getInstance().getDisplayHeight();
 
 
     }
@@ -80,8 +84,11 @@ public class Tiles {
         System.out.println(globalBase.getPosts("milton_academy"));
         TileForm tileFormTool = new TileForm();
         addEventForm evtFormTool = new addEventForm();
-        evtFormTool.imageCreation().show();
-        //tileFormTool.formCreated().show();
+
+        System.out.println("WIDTH= " + Display.getInstance().getDisplayWidth() + " HEIGHT= " +Display.getInstance().getDisplayHeight());
+        createEvent = evtFormTool.newForm();
+        tileFormTool.formCreated().show();
+        //showLoginForm();
     }
 
     private void showLoginForm() {
@@ -104,23 +111,24 @@ public class Tiles {
         loginWithGoogle.addActionListener((e) -> {
             tokenPrefix = "google";
             Login gc = GoogleConnect.getInstance();
-            gc.setClientId("1063668062883-etbppkvqrepcavge8043lpqhhm1bs4bi.apps.googleusercontent.com\n");
+            gc.setClientId("1063668062883-etbppkvqrepcavge8043lpqhhm1bs4bi.apps.googleusercontent.com");
             gc.setRedirectURI("http://www.codenameone.com/oauth2callback");
-            gc.setClientSecret("iq6W5bQ8K6gYmpLwlNyutwuF\n");
-            gc.setCallback(new LoginCallback() {
+            gc.setClientSecret("iq6W5bQ8K6gYmpLwlNyutwuF");
+           /* gc.setCallback(new LoginCallback() {
                 public void loginSuccessful() {
-                    createEvent.show();
                 }
 
-                public void loginFailed(String errorMessage) {System.out.println(errorMessage);}
+                public void loginFailed(String errorMessage) {System.out.println("THIS REALLY DIDN't WORK" + errorMessage);}
             });
+
             if(!gc.isUserLoggedIn()){
                 gc.doLogin();
             }else{
                 String token = gc.getAccessToken().getToken();
                 createEvent.show();
-            }
+            }*/
             doLogin(gc, new GoogleData(), false);
+            System.out.println("114670128593389003041");
         });
 
         panela.setLayout(new GridLayout(1,1));
@@ -139,10 +147,16 @@ public class Tiles {
         loginForm.show();
     }
 
+    void doLogout(Login lg, UserData data, boolean forceLogout)
+    {
+
+    }
+
     void doLogin(Login lg, UserData data, boolean forceLogin) {
         if(!forceLogin) {
             if(lg.isUserLoggedIn()) {
                 System.out.println("LOGIN SUCESSFUL");
+                System.out.println("ID:"+ uniqueId);
                 return;
             }
 
@@ -162,6 +176,7 @@ public class Tiles {
         lg.setCallback(new LoginCallback() {
             @Override
             public void loginFailed(String errorMessage) {
+                System.out.println("EROR YO");
                 Dialog.show("Error Logging In", "There was an error logging in: " + errorMessage, "OK", null);
             }
 
@@ -171,6 +186,7 @@ public class Tiles {
                 data.fetchData(lg.getAccessToken().getToken(), ()-> {
                     // we store the values of result into local variables
                     uniqueId = data.getId();
+                    System.out.println("ID: " + uniqueId);
                     fullName = data.getName();
                     imageURL = data.getImage();
 
