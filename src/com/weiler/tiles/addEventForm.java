@@ -144,7 +144,7 @@ public class addEventForm {
         });
 
 
-        helloForm.add(title).add(organization).add(timeComponent).add(description).add(forAc);
+        helloForm.add(title).add(organization).add(timeComponent).add(description).add(forAc).add(addData);
 
         return helloForm;
 
@@ -182,7 +182,7 @@ public class addEventForm {
         Button selectImage = new Button("Done");
         selectImage.addActionListener(evt -> {
             params.put("imageURL", globalBase.uploadImage(globalFilePath).get("url").toString());
-            globalImage = globalBase.getImage(params.get("imageURL"), Display.getInstance().getDisplayWidth()*(3/4), Display.getInstance().getDisplayHeight()*(3/4));
+            globalImage = globalBase.getImage(params.get("imageURL"), Display.getInstance().getDisplayWidth(), Display.getInstance().getDisplayHeight());
             globalBase.addPost(params);
         });
         imageForm.add(BorderLayout.SOUTH, selectImage);
@@ -191,6 +191,13 @@ public class addEventForm {
         return imageForm;
     }
 
+    public Form viewEvent(String identifier)
+    {
+        Form hello = new Form();
+
+
+        return hello;
+    }
   // HERE IS THE ID GENERATOR METHODS
 
     final String charList = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";

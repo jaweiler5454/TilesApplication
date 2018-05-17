@@ -17,6 +17,14 @@ import com.codename1.social.GoogleConnect;
 import com.codename1.ui.plaf.Style;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.codename1.charts.util.ColorUtil;
+import com.codename1.ui.plaf.RoundBorder;
+import com.codename1.ui.plaf.RoundRectBorder;
+import com.codename1.ui.layouts.LayeredLayout;
+import com.codename1.ui.layouts.BoxLayout;
+import com.codename1.ui.layouts.FlowLayout;
+
+
 
 
 
@@ -78,8 +86,68 @@ public class Tiles {
             current.show();
             return;
         }
-        Form hi = new Form("Welcome", new BorderLayout(BorderLayout.CENTER_BEHAVIOR_CENTER_ABSOLUTE));
 
+        Form hi = new Form("RoundRect", new BorderLayout(BorderLayout.CENTER_BEHAVIOR_CENTER));
+        hi.getToolbar().setUIID("Container");
+
+        Button ok = new Button("OK");
+        Button cancel = new Button("Cancel");
+
+        Label loginLabel = new Label("Login", "Container");
+        loginLabel.getAllStyles().setAlignment(Component.CENTER);
+
+        Label passwordLabel = new Label("Password", "Container");
+        passwordLabel.getAllStyles().setAlignment(Component.CENTER);
+
+        TextField login = new TextField("", "Login", 20, TextArea.ANY);
+        TextField password = new TextField("", "Password", 20, TextArea.PASSWORD);
+        Style loginStyle = login.getAllStyles();
+        Stroke borderStroke = new Stroke(2, Stroke.CAP_SQUARE, Stroke.JOIN_MITER, 1);
+        loginStyle.setBorder(RoundRectBorder.create().
+                strokeColor(0).
+                strokeOpacity(120).
+                stroke(borderStroke));
+        loginStyle.setBgColor(0xffffff);
+        loginStyle.setBgTransparency(255);
+        loginStyle.setMarginUnit(Style.UNIT_TYPE_DIPS);
+        loginStyle.setMargin(Component.BOTTOM, 3);
+        Style passwordStyle = password.getAllStyles();
+        passwordStyle.setBorder(RoundRectBorder.create().
+                strokeColor(0).
+                strokeOpacity(120).
+                stroke(borderStroke));
+        passwordStyle.setBgColor(0xffffff);
+        passwordStyle.setBgTransparency(255);
+
+
+        Container box = BoxLayout.encloseY(
+                loginLabel,
+                login,
+                passwordLabel,
+                password,
+                GridLayout.encloseIn(2, cancel, ok));
+
+        Button closeButton = new Button();
+        Style closeStyle = closeButton.getAllStyles();
+        closeStyle.setFgColor(0xffffff);
+        closeStyle.setBgTransparency(0);
+        closeStyle.setPaddingUnit(Style.UNIT_TYPE_DIPS);
+        closeStyle.setPadding(3, 3, 3, 3);
+        closeStyle.setBorder(RoundBorder.create().shadowOpacity(100));
+        FontImage.setMaterialIcon(closeButton, FontImage.MATERIAL_CLOSE);
+
+        Container layers = LayeredLayout.encloseIn(box, FlowLayout.encloseRight(closeButton));
+        Style boxStyle = box.getUnselectedStyle();
+        boxStyle.setBgTransparency(255);
+        boxStyle.setBgColor(0xeeeeee);
+        boxStyle.setMarginUnit(Style.UNIT_TYPE_DIPS);
+        boxStyle.setPaddingUnit(Style.UNIT_TYPE_DIPS);
+        boxStyle.setMargin(4, 3, 3, 3);
+        boxStyle.setPadding(2, 2, 2, 2);
+
+        hi.add(BorderLayout.CENTER, layers);
+
+        hi.show();
         //showLoginForm();
         System.out.println(globalBase.getPosts("milton_academy"));
         TileForm tileFormTool = new TileForm();
@@ -87,24 +155,26 @@ public class Tiles {
 
         System.out.println("WIDTH= " + Display.getInstance().getDisplayWidth() + " HEIGHT= " +Display.getInstance().getDisplayHeight());
         createEvent = evtFormTool.newForm();
-        tileFormTool.formCreated().show();
+        //createEvent.show();
+        //tileFormTool.formCreated().show();
         //showLoginForm();
     }
 
     private void showLoginForm() {
-        Form loginForm = new Form("Log In", new BorderLayout((BorderLayout.CENTER_BEHAVIOR_CENTER_ABSOLUTE)));
+        Form loginForm = new Form();
+        loginForm.getToolbar().hideToolbar();
+        loginForm.add( new Component() {
+            @Override
+            public void paint(Graphics g) {
+                // red color
+                g.setColor(0x00ffff);
+                // paint the screen in red
+                g.fillRect(getX(), getY(), displayWidth, displayHeight);
 
-        Container panela = new Container();
-        Container panelb = new Container();
-        Container panelbb = new Container();
+                // draw hi world in white text at the top left corner of the screen
+            }
+        });
 
-        try {
-            milton= Image.createImage("/Homepage.jpg");
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-
-        Label img = new Label("PIC");
 
 
         Button loginWithGoogle = new Button("Signin with Google");
@@ -131,19 +201,7 @@ public class Tiles {
             System.out.println("114670128593389003041");
         });
 
-        panela.setLayout(new GridLayout(1,1));
-        panela.add(img);
 
-        panelbb.setLayout(new GridLayout(1,1));
-        panelbb.add(loginWithGoogle);
-
-        panelb.setLayout(new GridLayout(1,1));
-        panelb.add(panelbb);
-
-        loginForm.setLayout(new GridLayout(2,1));
-
-        loginForm.addComponent(panela);
-        loginForm.addComponent(panelb);
         loginForm.show();
     }
 
