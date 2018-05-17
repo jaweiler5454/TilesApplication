@@ -41,6 +41,8 @@ import com.codename1.ui.list.MultiList;
 import java.util.Hashtable;
 import java.util.Random;
 import com.codename1.components.ImageViewer;
+import com.codename1.components.SpanLabel;
+import com.codename1.ui.animations.ComponentAnimation;
 
 
 
@@ -58,7 +60,7 @@ public class addEventForm {
     private String formattedLng = "";
     private String formattedLat = "";
     private DataBaseHelper globalBase = new DataBaseHelper();
-    private Map<String,String> params = new HashMap<String, String>();
+    private Map<String, String> params = new HashMap<String, String>();
     private String globalFilePath;
     private Image globalImage = null;
 
@@ -184,6 +186,8 @@ public class addEventForm {
             params.put("imageURL", globalBase.uploadImage(globalFilePath).get("url").toString());
             globalImage = globalBase.getImage(params.get("imageURL"), Display.getInstance().getDisplayWidth(), Display.getInstance().getDisplayHeight());
             globalBase.addPost(params);
+            viewEvent("1234567").show();
+
         });
         imageForm.add(BorderLayout.SOUTH, selectImage);
 
@@ -193,10 +197,30 @@ public class addEventForm {
 
     public Form viewEvent(String identifier)
     {
-        Form hello = new Form();
+        System.out.println("HELLO");
+        ArrayList<Map<String, Object>> event = globalBase.getEventById(identifier);
+        Map<String, Object> event1 = event.get(0);
+        Form viewEventForm = new Form(event1.get("Title").toString(), new BoxLayout(BoxLayout.Y_AXIS));
+        Image image = globalBase.getImage(event1.get("ImageURL").toString(), viewEventForm.getWidth(), viewEventForm.getHeight()/5);
+        Style stitle = viewEventForm.getToolbar().getTitleComponent().getUnselectedStyle();
+        stitle.setBgImage(image);
+        stitle.setBackgroundType(Style.BACKGROUND_IMAGE_SCALED_FILL);
+        stitle.setPaddingUnit(Style.UNIT_TYPE_DIPS, Style.UNIT_TYPE_DIPS, Style.UNIT_TYPE_DIPS, Style.UNIT_TYPE_DIPS);
+        stitle.setPaddingTop(15);
 
+        Label organization = new Label(event1.get("Organization").toString());
+        Label dateTime = new Label(event1.get("Date").toString()+ " " + event1.get("Time").toString());
+        Label responses = new Label(event1.get("Responses").toString());
+        Container justTheFourOfUs = new Container();
+        justTheFourOfUs.setLayout(new BoxLayout(BoxLayout.X_AXIS));
+        justTheFourOfUs.add(organization).add(dateTime). add(responses);
+        Label location = new Label(event1.get("Location").toString());
+        SpanLabel description = new SpanLabel(event1.get("Description").toString());
+        viewEventForm.add(justTheFourOfUs).add(description).add(location);
+        ComponentAnimation title = viewEventForm.getToolbar().getTitleComponent().createStyleAnimation("Title", 200);
+        viewEventForm.getAnimationManager().onTitleScrollAnimation(title);
 
-        return hello;
+        return viewEventForm;
     }
   // HERE IS THE ID GENERATOR METHODS
 

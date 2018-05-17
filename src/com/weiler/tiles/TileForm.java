@@ -36,8 +36,10 @@ public class TileForm {
 
     public Form formCreated()
     {
+        TableLayout tl = new TableLayout( 4, 2);
+        Form formReturned = new Form("Hello", tl);
+        formReturned.setScrollable(true);
         ArrayList<Map<String,Object>> tilesByOrg = new ArrayList<Map<String,Object>>();
-
         ArrayList<Button> tilesButtons = new ArrayList<Button>();
 
 
@@ -81,9 +83,7 @@ public class TileForm {
 
 
         */
-        TableLayout tl = new TableLayout( 4, 2);
-        Form formReturned = new Form("Hello", tl);
-        formReturned.setScrollable(true);
+
         for(int i=0; i<tilesButtons.size(); i++) {
 
             System.out.println(tilesByOrg.get(i).get("Title").toString() + tilesByOrg.get(i).get("ImageURL").toString());

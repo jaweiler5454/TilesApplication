@@ -147,7 +147,7 @@ public class Tiles {
 
         hi.add(BorderLayout.CENTER, layers);
 
-        hi.show();
+        //hi.show();
         //showLoginForm();
         System.out.println(globalBase.getPosts("milton_academy"));
         TileForm tileFormTool = new TileForm();
@@ -155,7 +155,7 @@ public class Tiles {
 
         System.out.println("WIDTH= " + Display.getInstance().getDisplayWidth() + " HEIGHT= " +Display.getInstance().getDisplayHeight());
         createEvent = evtFormTool.newForm();
-        //createEvent.show();
+       createEvent.show();
         //tileFormTool.formCreated().show();
         //showLoginForm();
     }

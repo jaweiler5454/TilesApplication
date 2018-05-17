@@ -54,6 +54,25 @@ public class DataBaseHelper {
         */
     }
 
+    public ArrayList<Map<String, Object>> getEventById(String id)
+    {
+        try{
+            ConnectionRequest r= new ConnectionRequest();
+            r.setUrl("http://tilessubdomain.ma1geek.org/getEventById.php");
+            r.setPost(false);
+            r.addArgument("eventID", id);
+            NetworkManager.getInstance().addToQueueAndWait(r);
+            Map<String,Object> result= new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData()), "UTF-8"));
+            ArrayList<Map<String, Object>> content = (ArrayList<Map<String, Object>>)result.get("root");
+            return content;
+        }
+        catch(Exception e)
+        {
+            Log.e(e);
+            return null;
+        }
+    }
+
     public Image getImage(String url, int width, int height)
     {
         Image placeholder = Image.createImage(width, height);
