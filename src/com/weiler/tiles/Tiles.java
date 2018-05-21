@@ -31,6 +31,7 @@ import com.codename1.charts.util.ColorUtil;
 import com.codename1.ui.plaf.RoundBorder;
 import com.codename1.ui.plaf.RoundRectBorder;
 import com.codename1.ui.Font;
+import com.codename1.capture.Capture;
 
 
 
@@ -255,6 +256,7 @@ public class Tiles {
         Button cameraButton = new Button("Open Camera");
 
         imageForm.add(BorderLayout.NORTH, browse);
+        imageForm.add(BorderLayout.NORTH, cameraButton);
         browse.addActionListener(evt -> {
             Display.getInstance().openGallery(event ->{
                 if (event != null && event.getSource() != null) {
@@ -277,6 +279,17 @@ public class Tiles {
 
             }, Display.GALLERY_IMAGE);
         });
+        cameraButton.addActionListener(et -> {
+        String filePath = Capture.capturePhoto();
+        if(filePath != null) {
+            try {
+                Image img = Image.createImage(filePath);
+
+            } catch(IOException err) {
+                Log.e(err);
+            }
+        }
+    });
         Button selectImage = new Button("Done");
         selectImage.addActionListener(evt -> {
             params.put("imageURL", globalBase.uploadImage(globalFilePath).get("url").toString());

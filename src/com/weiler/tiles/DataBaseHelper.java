@@ -3,10 +3,7 @@ package com.weiler.tiles;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 
 import com.cloudinary.Cloudinary;
@@ -19,7 +16,6 @@ import com.codename1.io.Log;
 import com.codename1.io.NetworkManager;
 import com.codename1.ui.EncodedImage;
 import com.codename1.ui.Image;
-import com.codename1.ui.Label;
 
 public class DataBaseHelper {
 

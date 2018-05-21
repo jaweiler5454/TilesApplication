@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_tilesapplication" default="compile.module.tilesapplication">
+  <dirname property="module.tilesapplication.basedir" file="${ant.file.module_tilesapplication}"/>
+  
+  <property name="module.jdk.home.tilesapplication" value="${jdk.home.1.8}"/>
+  <property name="module.jdk.bin.tilesapplication" value="${jdk.bin.1.8}"/>
+  <property name="module.jdk.classpath.tilesapplication" value="jdk.classpath.1.8"/>
+  
+  <property name="compiler.args.tilesapplication" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="tilesapplication.output.dir" value="${module.tilesapplication.basedir}/out/production/TilesApplication"/>
+  <property name="tilesapplication.testoutput.dir" value="${module.tilesapplication.basedir}/out/test/TilesApplication"/>
+  
+  <path id="tilesapplication.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="tilesapplication.module.production.classpath">
+    <path refid="${module.jdk.classpath.tilesapplication}"/>
+    <path refid="library.codename_one_libraries.classpath"/>
+  </path>
+  
+  <path id="tilesapplication.runtime.production.module.classpath">
+    <pathelement location="${tilesapplication.output.dir}"/>
+  </path>
+  
+  <path id="tilesapplication.module.classpath">
+    <path refid="${module.jdk.classpath.tilesapplication}"/>
+    <pathelement location="${tilesapplication.output.dir}"/>
+    <path refid="library.codename_one_libraries.classpath"/>
+  </path>
+  
+  <path id="tilesapplication.runtime.module.classpath">
+    <pathelement location="${tilesapplication.testoutput.dir}"/>
+    <pathelement location="${tilesapplication.output.dir}"/>
+    <path refid="library.codename_one_libraries.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.tilesapplication">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.tilesapplication">
+    <patternset refid="excluded.from.module.tilesapplication"/>
+  </patternset>
+  
+  <path id="tilesapplication.module.sourcepath">
+    <dirset dir="${module.tilesapplication.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.tilesapplication" depends="compile.module.tilesapplication.production,compile.module.tilesapplication.tests" description="Compile module TilesApplication"/>
+  
+  <target name="compile.module.tilesapplication.production" depends="register.custom.compilers" description="Compile module TilesApplication; production classes">
+    <mkdir dir="${tilesapplication.output.dir}"/>
+    <javac2 destdir="${tilesapplication.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.tilesapplication}/javac">
+      <compilerarg line="${compiler.args.tilesapplication}"/>
+      <bootclasspath refid="tilesapplication.module.bootclasspath"/>
+      <classpath refid="tilesapplication.module.production.classpath"/>
+      <src refid="tilesapplication.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.tilesapplication"/>
+    </javac2>
+    
+    <copy todir="${tilesapplication.output.dir}">
+      <fileset dir="${module.tilesapplication.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.tilesapplication.tests" depends="register.custom.compilers,compile.module.tilesapplication.production" description="compile module TilesApplication; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.tilesapplication" description="cleanup module">
+    <delete dir="${tilesapplication.output.dir}"/>
+    <delete dir="${tilesapplication.testoutput.dir}"/>
+  </target>
+</project>
