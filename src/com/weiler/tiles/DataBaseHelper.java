@@ -35,15 +35,15 @@ public class DataBaseHelper {
     DatabaseHelper base = new DatabaseHelper();
     base.testMethods();
     */
-    public Map<String, Object> getUserByUsername(String username){
+    public ArrayList<Map<String, Object>> getUsers(){
         try {
             ConnectionRequest r = new ConnectionRequest();
-            r.setUrl("http://tutormilton.ma1geek.org/getUser.php");
+            r.setUrl("http://tilessubdomain.ma1geek.org/getUsers.php");
             r.setPost(false);
-            r.addArgument("username",username);
             NetworkManager.getInstance().addToQueueAndWait(r);
             Map<String,Object> result = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData()), "UTF-8"));
-            return result;
+            ArrayList<Map<String, Object>> content = (ArrayList<Map<String, Object>>)result.get("root");
+            return content;
         } catch(Exception err) {
             Log.e(err);
             return null;
@@ -179,7 +179,7 @@ public class DataBaseHelper {
     public boolean addUser(Map<String,String> params){
         try {
             ConnectionRequest r = new ConnectionRequest();
-            r.setUrl("http://tutormilton.ma1geek.org/addUser.php");
+            r.setUrl("http://tilessubdomain.ma1geek.org/addUser.php");
             r.setPost(true);
             for(String key: params.keySet())
             {

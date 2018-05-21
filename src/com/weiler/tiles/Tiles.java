@@ -2,17 +2,27 @@ package com.weiler.tiles;
 
 import static com.codename1.ui.CN.*;
 
+import com.codename1.components.ImageViewer;
+import com.codename1.components.SpanLabel;
 import com.codename1.io.*;
+
+import java.io.ByteArrayInputStream;
+import java.util.*;
+
+import com.codename1.maps.Coord;
+import com.codename1.processing.Result;
 import com.codename1.social.LoginCallback;
 import com.codename1.ui.*;
-import com.codename1.ui.layouts.BorderLayout;
+import com.codename1.ui.animations.ComponentAnimation;
+import com.codename1.ui.layouts.*;
+import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.plaf.UIManager;
+import com.codename1.ui.table.TableLayout;
 import com.codename1.ui.util.Resources;
 import java.io.IOException;
-import java.util.Map;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import com.codename1.ui.layouts.GridLayout;
+
 import com.codename1.social.GoogleConnect;
 import com.codename1.ui.plaf.Style;
 import com.cloudinary.Cloudinary;
@@ -20,9 +30,9 @@ import com.cloudinary.utils.ObjectUtils;
 import com.codename1.charts.util.ColorUtil;
 import com.codename1.ui.plaf.RoundBorder;
 import com.codename1.ui.plaf.RoundRectBorder;
-import com.codename1.ui.layouts.LayeredLayout;
-import com.codename1.ui.layouts.BoxLayout;
-import com.codename1.ui.layouts.FlowLayout;
+import com.codename1.ui.Font;
+
+
 
 
 
@@ -40,20 +50,33 @@ public class Tiles {
     private Form current;
     private Resources theme;
     private static String tokenPrefix="google";
+    public ArrayList<Style> tileUnselectedStyle = new ArrayList<>();
     private Image milton;
     private String fullName;
     private String uniqueId;
     private String imageURL;
-    private addEventForm form1 = new addEventForm();
     private Form createEvent;
-    private DataBaseHelper globalBase = new DataBaseHelper();
     public Cloudinary cloudinary;
     public int displayWidth;
     public int displayHeight;
+    private String HTML_API_KEY = "AIzaSyBKwXKAsfDSTiDHyWQ5126q6bnkuOiBNVc";
+    private final String[] finalAddress = {""};
+    private Coord coordinates = new Coord(0,0);
+    private String formattedLng = "";
+    private String formattedLat = "";
+    private DataBaseHelper globalBase = new DataBaseHelper();
+    private Map<String, String> params = new HashMap<String, String>();
+    private String globalFilePath;
+    private Image globalImage = null;
+    //public Font ballpark1 = Font.createTrueTypeFont("ballpark", "ballpark_weiner.ttf").derive(36, Font.STYLE_PLAIN);
+
+
 
 
     public void init(Object context) {
         theme = UIManager.initFirstTheme("/theme");
+       // Toolbar.setOnTopSideMenu(true);
+
 
         // Enable Toolbar on all Forms by default
         Toolbar.setGlobalToolbar(true);
@@ -87,97 +110,32 @@ public class Tiles {
             return;
         }
 
-        Form hi = new Form("RoundRect", new BorderLayout(BorderLayout.CENTER_BEHAVIOR_CENTER));
-        hi.getToolbar().setUIID("Container");
 
-        Button ok = new Button("OK");
-        Button cancel = new Button("Cancel");
-
-        Label loginLabel = new Label("Login", "Container");
-        loginLabel.getAllStyles().setAlignment(Component.CENTER);
-
-        Label passwordLabel = new Label("Password", "Container");
-        passwordLabel.getAllStyles().setAlignment(Component.CENTER);
-
-        TextField login = new TextField("", "Login", 20, TextArea.ANY);
-        TextField password = new TextField("", "Password", 20, TextArea.PASSWORD);
-        Style loginStyle = login.getAllStyles();
-        Stroke borderStroke = new Stroke(2, Stroke.CAP_SQUARE, Stroke.JOIN_MITER, 1);
-        loginStyle.setBorder(RoundRectBorder.create().
-                strokeColor(0).
-                strokeOpacity(120).
-                stroke(borderStroke));
-        loginStyle.setBgColor(0xffffff);
-        loginStyle.setBgTransparency(255);
-        loginStyle.setMarginUnit(Style.UNIT_TYPE_DIPS);
-        loginStyle.setMargin(Component.BOTTOM, 3);
-        Style passwordStyle = password.getAllStyles();
-        passwordStyle.setBorder(RoundRectBorder.create().
-                strokeColor(0).
-                strokeOpacity(120).
-                stroke(borderStroke));
-        passwordStyle.setBgColor(0xffffff);
-        passwordStyle.setBgTransparency(255);
-
-
-        Container box = BoxLayout.encloseY(
-                loginLabel,
-                login,
-                passwordLabel,
-                password,
-                GridLayout.encloseIn(2, cancel, ok));
-
-        Button closeButton = new Button();
-        Style closeStyle = closeButton.getAllStyles();
-        closeStyle.setFgColor(0xffffff);
-        closeStyle.setBgTransparency(0);
-        closeStyle.setPaddingUnit(Style.UNIT_TYPE_DIPS);
-        closeStyle.setPadding(3, 3, 3, 3);
-        closeStyle.setBorder(RoundBorder.create().shadowOpacity(100));
-        FontImage.setMaterialIcon(closeButton, FontImage.MATERIAL_CLOSE);
-
-        Container layers = LayeredLayout.encloseIn(box, FlowLayout.encloseRight(closeButton));
-        Style boxStyle = box.getUnselectedStyle();
-        boxStyle.setBgTransparency(255);
-        boxStyle.setBgColor(0xeeeeee);
-        boxStyle.setMarginUnit(Style.UNIT_TYPE_DIPS);
-        boxStyle.setPaddingUnit(Style.UNIT_TYPE_DIPS);
-        boxStyle.setMargin(4, 3, 3, 3);
-        boxStyle.setPadding(2, 2, 2, 2);
-
-        hi.add(BorderLayout.CENTER, layers);
 
         //hi.show();
         //showLoginForm();
+        tileForm().show();
         System.out.println(globalBase.getPosts("milton_academy"));
-        TileForm tileFormTool = new TileForm();
-        addEventForm evtFormTool = new addEventForm();
 
         System.out.println("WIDTH= " + Display.getInstance().getDisplayWidth() + " HEIGHT= " +Display.getInstance().getDisplayHeight());
-        createEvent = evtFormTool.newForm();
-       createEvent.show();
-        //tileFormTool.formCreated().show();
-        //showLoginForm();
+
     }
 
     private void showLoginForm() {
         Form loginForm = new Form();
-        loginForm.getToolbar().hideToolbar();
-        loginForm.add( new Component() {
-            @Override
-            public void paint(Graphics g) {
-                // red color
-                g.setColor(0x00ffff);
-                // paint the screen in red
-                g.fillRect(getX(), getY(), displayWidth, displayHeight);
-
-                // draw hi world in white text at the top left corner of the screen
-            }
-        });
+        loginForm.setLayout(new BorderLayout());
+        Style loginStyle = new Style();
+        loginStyle.setBgColor(0x9300FF);
+        Label titleLabel = new Label("Tiles");
+        Style labelStyle = new Style();
+        //labelStyle.setFont(ballpark1);
+        titleLabel.setUnselectedStyle(labelStyle);
+        loginForm.setUnselectedStyle(loginStyle);
 
 
 
-        Button loginWithGoogle = new Button("Signin with Google");
+        Button loginWithGoogle = new Button("Sign in with Google");
+        loginWithGoogle.setUIID("LoginButtonGoogle");
         loginWithGoogle.addActionListener((e) -> {
             tokenPrefix = "google";
             Login gc = GoogleConnect.getInstance();
@@ -201,14 +159,403 @@ public class Tiles {
             System.out.println("114670128593389003041");
         });
 
-
+        loginForm.add(BorderLayout.CENTER, titleLabel).add(BorderLayout.SOUTH, loginWithGoogle);
         loginForm.show();
     }
 
-    void doLogout(Login lg, UserData data, boolean forceLogout)
+
+
+    public Form addTile()
     {
+        TextModeLayout textModeLayout = new TextModeLayout(3,2);
+        Form helloForm = new Form("Add an Event", textModeLayout);
+
+        TextComponent title = new TextComponent().label("Title");
+        TextComponent organization = new TextComponent().label("Organization");
+        TextComponent description = new TextComponent().label("Description").multiline(true);
+        PickerComponent dateComponent = PickerComponent.createDate(new Date()).label("Date");
+        Container forAc = new Container();
+
+
+        final DefaultListModel<String> options = new DefaultListModel<>();
+        AutoCompleteTextField ac = new AutoCompleteTextField(options) {
+            @Override
+            protected boolean filter(String text) {
+                if (text.length() == 0) {
+                    return false;
+                }
+                String[] l = searchLocations(text);
+                if (l == null || l.length == 0) {
+                    return false;
+                }
+
+                options.removeAll();
+                for (String s : l) {
+                    options.addItem(s);
+                }
+                return true;
+            }
+
+        };
+
+
+        ac.setMinimumElementsShownInPopup(5);
+        Style so = UIManager.getInstance().getComponentStyle("TitleCommand");
+        FontImage icon = FontImage.createMaterial(FontImage.MATERIAL_SEARCH, so);
+        String getAddress = new String();
+        getAddress = ac.getText();
+        System.out.println(getAddress);
+        forAc.add(new Label("Location")).add(ac);
+
+
+
+
+        Button addData = new Button("Add New Tile");
+        addData.addActionListener(evt -> {
+            System.out.println("hello");
+            DataBaseHelper base = new DataBaseHelper();
+
+            finalAddress[0] = ac.getText();
+            final String finalAddressTrue = finalAddress[0];
+            coordinates = geocode(finalAddressTrue);
+            Double lng = coordinates.getLongitude();
+            Double lat = coordinates.getLatitude();
+            formattedLng = lng.toString();
+            formattedLat = lat.toString();
+
+            params.put("eventID", standIDGenerator());
+            params.put("title", title.getText());
+            params.put("latitude", formattedLat);
+            params.put("longitude", formattedLng);
+            params.put("location", finalAddressTrue);
+            params.put("description", description.getText());
+            params.put("userPosted", "jaweiler5454@gmail.com");
+            params.put("responses", "10");
+            params.put("schoolID", "milton_academy");
+            //params.put("imageURL", "milton.edu");
+            params.put("date", "");
+            params.put("time", "");
+            params.put("organization", organization.getText());
+            imageCreation().show();
+        });
+
+
+        helloForm.add(title).add(organization).add(dateComponent).add(description).add(forAc).add(addData);
+
+        return helloForm;
 
     }
+
+
+    public Form imageCreation()
+    {
+        System.out.println(params.get("imageURL"));
+        Form imageForm = new Form("Choose an Image for Your Tile" , new BorderLayout());
+        Button browse = new Button("Browse for an Image");
+        Button cameraButton = new Button("Open Camera");
+
+        imageForm.add(BorderLayout.NORTH, browse);
+        browse.addActionListener(evt -> {
+            Display.getInstance().openGallery(event ->{
+                if (event != null && event.getSource() != null) {
+                    String filePath = (String) event.getSource();
+                    globalFilePath = filePath;
+                    int fileNameIndex = filePath.lastIndexOf("/") + 1;
+                    String fileName = filePath.substring(fileNameIndex);
+                    Image img = null;
+                    try {
+                        img = Image.createImage(FileSystemStorage.getInstance().openInputStream(filePath));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    globalImage = img;
+                    ImageViewer iv = new ImageViewer(img);
+                    imageForm.add(BorderLayout.CENTER, iv);
+
+                    // Do something, add to List
+                }
+
+            }, Display.GALLERY_IMAGE);
+        });
+        Button selectImage = new Button("Done");
+        selectImage.addActionListener(evt -> {
+            params.put("imageURL", globalBase.uploadImage(globalFilePath).get("url").toString());
+            globalImage = globalBase.getImage(params.get("imageURL"), Display.getInstance().getDisplayWidth(), Display.getInstance().getDisplayHeight());
+            globalBase.addPost(params);
+            viewEvent(params.get("eventID")).show();
+
+        });
+        imageForm.add(BorderLayout.SOUTH, selectImage);
+
+
+        return imageForm;
+    }
+
+    public Form viewEvent(String identifier)
+    {
+
+
+        System.out.println("HELLO");
+        ArrayList<Map<String, Object>> event = globalBase.getEventById(identifier);
+        Map<String, Object> event1 = event.get(0);
+        Form viewEventForm = new Form();
+        viewEventForm.setToolbar(new Toolbar());
+        viewEventForm.setTitle(event1.get("Title").toString());
+        viewEventForm.setLayout(new BoxLayout(BoxLayout.Y_AXIS));
+        Image image = globalBase.getImage(event1.get("ImageURL").toString(), viewEventForm.getWidth(), viewEventForm.getHeight()/5);
+        Style stitle = new Style();
+        stitle.setBgImage(image);
+        stitle.setBgColor(0x9300FF);
+        stitle.setBackgroundType(Style.BACKGROUND_IMAGE_SCALED_FILL);
+        stitle.setPaddingUnit(Style.UNIT_TYPE_DIPS, Style.UNIT_TYPE_DIPS, Style.UNIT_TYPE_DIPS, Style.UNIT_TYPE_DIPS);
+        stitle.setPaddingTop(30);
+        stitle.setPaddingLeft(10);
+        stitle.setPaddingRight(10);
+        stitle.setMarginBottom(0);
+
+
+        Label organization = new Label(event1.get("Organization").toString());
+        Label dateTime = new Label(event1.get("Date").toString()+ " " + event1.get("Time").toString());
+        Label responses = new Label(event1.get("Responses").toString());
+        Container justTheFourOfUs = new Container();
+        justTheFourOfUs.setLayout(new BoxLayout(BoxLayout.X_AXIS));
+        justTheFourOfUs.add(organization).add(dateTime). add(responses);
+        Label location = new Label(event1.get("Location").toString());
+        SpanLabel description = new SpanLabel(event1.get("Description").toString());
+        viewEventForm.add(justTheFourOfUs).add(description).add(location);
+
+
+        viewEventForm.getToolbar().setUnselectedStyle(stitle);
+        viewEventForm.getToolbar().addMaterialCommandToSideMenu("Home", FontImage.MATERIAL_HOME, e -> {
+            tileForm().show();});
+        viewEventForm.getToolbar().addMaterialCommandToSideMenu("Create", FontImage.MATERIAL_PLUS_ONE, e -> {
+            addTile().show();});
+        viewEventForm.getToolbar().addMaterialCommandToSideMenu("Settings", FontImage.MATERIAL_SETTINGS, e -> {});
+        viewEventForm.getToolbar().addMaterialCommandToSideMenu("My Profile", FontImage.MATERIAL_PERSON, e -> {});
+
+        ComponentAnimation title = viewEventForm.getToolbar().createStyleAnimation("Toolbar", 200);
+        viewEventForm.getAnimationManager().onTitleScrollAnimation(title);
+
+
+        return viewEventForm;
+    }
+    // HERE IS THE ID GENERATOR METHODS
+
+    final String charList = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+    final int idLength = 10;
+
+    private int getRandomNumber() {
+        int randomInt = 0;
+        Random randomGenerator = new Random();
+        randomInt = randomGenerator.nextInt(charList.length());
+        if (randomInt - 1 == -1) {
+            return randomInt;
+        } else {
+            return randomInt - 1;
+        }
+    }
+
+
+    public String standIDGenerator()
+    {
+        StringBuffer randStr = new StringBuffer();
+        for(int i=0; i<idLength; i++){
+            int number = getRandomNumber();
+            char ch = charList.charAt(number);
+            randStr.append(ch);
+        }
+
+        return randStr.toString();
+    }
+
+
+
+    boolean checkID(String prelimID)
+    {
+        ArrayList basedIds = new ArrayList();
+        for(int i=0; i<globalBase.getPosts("milton_academy").size(); i++) {
+            basedIds.add(globalBase.getPosts("milton_academy").get(i).get("EventID").toString());
+        }
+
+        if(basedIds.contains(prelimID))
+        {
+            return false;
+        }
+
+        else
+        {
+            return true;
+        }
+
+    }
+
+
+
+
+    /// GEOCODING PROCEDURES BELOW
+    public String[] searchLocations(String input) {
+        try {
+            if(input.length() > 0) {
+                ConnectionRequest r = new ConnectionRequest();
+                r.setPost(false);
+                r.setUrl("https://maps.googleapis.com/maps/api/place/autocomplete/json");
+                r.addArgument("key", HTML_API_KEY);
+                r.addArgument("input", input);
+                NetworkManager.getInstance().addToQueueAndWait(r);
+                Map<String,Object> result = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData()), "UTF-8"));
+                String[] res = Result.fromContent(result).getAsStringArray("//description");
+                return res;
+            }
+        } catch(Exception err) {
+            Log.e(err);
+        }
+        return null;
+    }
+
+    public Coord geocode(String fullAddress){
+        String text="";
+        Coord ret = null;
+        try {
+            final String link = "https://maps.googleapis.com/maps/api/geocode/json";
+            // URL url = new URL(link + "?address=" + URLEncoder.encode(fullAddress, "UTF-8")+ "&sensor=false");
+            // Open the Connection
+            ConnectionRequest req = new ConnectionRequest();
+            req.setPost(false);
+            req.setUrl(link);
+            req.addArgument("address", fullAddress);
+            req.addArgument("key", HTML_API_KEY);
+
+
+            //https://gist.github.com/ahmedengu/0869b8c0644eee0d57d3891bc51a00dc
+            NetworkManager.getInstance().addToQueueAndWait(req);
+            Map<String, Object> response = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(req.getResponseData()), "UTF-8"));
+            if (response.get("results") != null) {
+                ArrayList results = (ArrayList) response.get("results");
+                if (results.size() > 0) {
+                    LinkedHashMap location = (LinkedHashMap) ((LinkedHashMap) ((LinkedHashMap) results.get(0)).get("geometry")).get("location");
+                    ret = new Coord((double) location.get("lat"), (double) location.get("lng"));
+
+
+
+                }
+            }
+            return ret;
+
+        }
+        catch(Exception ex){
+            Log.e(ex);
+        }
+
+        return null;
+
+    }
+
+    public Form tileForm()
+    {
+        TableLayout tl = new TableLayout( 4, 2);
+        Form formReturned = new Form("Tiles",tl);
+        formReturned.setToolbar(new Toolbar());
+        Style toolbarStyle = new Style();
+        toolbarStyle.setBgColor(0x9300FF);
+        toolbarStyle.setMargin(0,0,0,0);
+        formReturned.getToolbar().setUnselectedStyle(toolbarStyle);
+
+
+        Style stitle = new Style();
+        Label titleLabel = new Label("Tiles");
+        formReturned.getToolbar().setTitleComponent(titleLabel);
+        //
+        //
+        //
+        //stitle.setFont(ballpark);
+        stitle.setPaddingLeft(15);
+        stitle.setPaddingRight(15);
+        stitle.setBgColor(0x9300FF);
+        stitle.setFgColor(0xFFFFFF);
+        titleLabel.setUnselectedStyle(stitle);
+        formReturned.setScrollable(true);
+        // formReturned.getToolbar().setOnTopSideMenu(true);
+
+
+        formReturned.getToolbar().addMaterialCommandToSideMenu("Home", FontImage.MATERIAL_HOME, e -> {
+            formReturned.show();});
+        formReturned.getToolbar().addMaterialCommandToSideMenu("Create", FontImage.MATERIAL_PLUS_ONE, e -> {
+        addTile().show();});
+        formReturned.getToolbar().addMaterialCommandToSideMenu("Settings", FontImage.MATERIAL_SETTINGS, e -> {});
+        formReturned.getToolbar().addMaterialCommandToSideMenu("My Profile", FontImage.MATERIAL_PERSON, e -> {});
+        formReturned.getToolbar().setUnselectedStyle(toolbarStyle);
+
+
+        Container topBar = new Container();
+
+
+
+        ArrayList<Map<String,Object>> tilesByOrg = globalBase.getPosts("milton_academy");
+        ArrayList<Image> imagesArray= new ArrayList<Image>();
+        ArrayList<Button> tilesButtons = new ArrayList<Button>();
+
+        for(int i=0; i<tilesByOrg.size(); i++)
+        {
+            tileUnselectedStyle.add(new Style());
+            imagesArray.add(globalBase.getImage(tilesByOrg.get(i).get("ImageURL").toString(), 100, 100));
+            tilesButtons.add(new Button(tilesByOrg.get(i).get("Title").toString()));
+        }
+        for(int i=0; i<tilesButtons.size(); i++) {
+
+            tileUnselectedStyle.get(i).setBgImage(imagesArray.get(i));
+            tileUnselectedStyle.get(i).setBorder(RoundRectBorder.create());
+            tileUnselectedStyle.get(i).setMargin(1,1,1,1);
+            tilesButtons.get(i).setUnselectedStyle(tileUnselectedStyle.get(i));
+            String eventID = tilesByOrg.get(i).get("EventID").toString();
+            tilesButtons.get(i).addActionListener(evt->{
+                viewEvent(eventID).show();
+            });
+
+        }
+
+        for(int i=tilesByOrg.size()-1; i>0; i--) {
+            formReturned.add(tl.createConstraint().widthPercentage(50).heightPercentage(15), tilesButtons.get(i));
+        }
+
+
+        formReturned.getContentPane().addPullToRefresh(() -> {
+            for(int i=0; i<globalBase.getPosts("milton_academy").size(); i++)
+            {
+                tilesByOrg.remove(i);
+                tilesButtons.remove(i);
+                imagesArray.remove(i);
+                tileUnselectedStyle.remove(i);
+
+                tilesByOrg.add(globalBase.getPosts("milton_academy").get(i));
+                tilesButtons.add(new Button(tilesByOrg.get(i).get("Title").toString()));
+                imagesArray.add(globalBase.getImage(tilesByOrg.get(i).get("ImageURL").toString(), 100, 100));
+                tileUnselectedStyle.add(new Style());
+
+                tileUnselectedStyle.get(i).setBgImage(imagesArray.get(i));
+                tileUnselectedStyle.get(i).setBorder(RoundRectBorder.create());
+                tileUnselectedStyle.get(i).setMargin(1,1,1,1);
+
+                tilesButtons.get(i).setUnselectedStyle(tileUnselectedStyle.get(i));
+                String eventId= tilesByOrg.get(i).get("EventID").toString();
+
+                tilesButtons.get(i).addActionListener(evt -> {
+                    viewEvent(eventId);
+                });
+
+
+            }
+
+            for(int i=tilesByOrg.size()-1; i>0; i--) {
+                formReturned.add(tl.createConstraint().widthPercentage(50).heightPercentage(15), tilesButtons.get(i));
+            }
+
+
+        });
+
+
+        return formReturned;
+    }
+
 
     void doLogin(Login lg, UserData data, boolean forceLogin) {
         if(!forceLogin) {
@@ -243,10 +590,21 @@ public class Tiles {
                 // when login is successful we fetch the full data
                 data.fetchData(lg.getAccessToken().getToken(), ()-> {
                     // we store the values of result into local variables
+
                     uniqueId = data.getId();
-                    System.out.println("ID: " + uniqueId);
                     fullName = data.getName();
                     imageURL = data.getImage();
+                    ArrayList<Map<String, Object>> dict = globalBase.getUsers();
+                    if(!dict.get(0).containsKey(uniqueId))
+                    {
+                        Map<String,String> params = new HashMap<String, String>();
+                        params.put("id", uniqueId);
+                        params.put("name", fullName);
+                        params.put("email", "john_weiler18@milton.edu");
+                        params.put("events", "");
+                        params.put("eventsGoing", "");
+                        globalBase.addUser(params);
+                    }
 
                     // we then store the data into local cached storage so they will be around when we run the app next time
                     Preferences.set("fullName", fullName);
