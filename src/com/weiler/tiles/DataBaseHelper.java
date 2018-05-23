@@ -134,6 +134,29 @@ public class DataBaseHelper {
         System.out.println(base.getUserByID("123456"));
         */
     }
+
+    public Map<String, Object> updateResponses(String id, String responses){
+        try {
+            ConnectionRequest r = new ConnectionRequest();
+            r.setUrl("http://tilessubdomain.ma1geek.org/updateEventsResponse.php");
+            r.setPost(true);
+            r.addArgument("eventID",id);
+            r.addArgument("responses", responses);
+            NetworkManager.getInstance().addToQueueAndWait(r);
+            Map<String,Object> result = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData()), "UTF-8"));
+            return result;
+        } catch(Exception err) {
+            Log.e(err);
+            return null;
+        }
+    	/* EXAMPLE
+   	 	DatabaseHelper base = new DatabaseHelper();
+        System.out.println(base.getUserByID("123456"));
+        */
+    }
+
+
+
     public ArrayList<Map<String, Object>> getPosts(String className){
         try {
             ConnectionRequest r = new ConnectionRequest();
@@ -153,6 +176,7 @@ public class DataBaseHelper {
         System.out.println(base.getPosts("Programming 2"));
         */
     }
+
     public ArrayList<Map<String, Object>> getComments(String postID){
         try {
             ConnectionRequest r = new ConnectionRequest();
@@ -280,6 +304,7 @@ VALUES ('$eventID', '$title', '$latitude', '$longitude', '$location', '$descript
          System.out.println(base.deletePost("1010"));
          */
     }
+
     public int addLike(String qid, String username){ //returns likes if works, -10000 if doesn't. Changing likes also changes user rating
         try {
             ConnectionRequest r = new ConnectionRequest();

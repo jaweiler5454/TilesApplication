@@ -27,19 +27,12 @@ import com.codename1.social.GoogleConnect;
 import com.codename1.ui.plaf.Style;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.codename1.charts.util.ColorUtil;
-import com.codename1.ui.plaf.RoundBorder;
 import com.codename1.ui.plaf.RoundRectBorder;
-import com.codename1.ui.Font;
 import com.codename1.capture.Capture;
-
-
-
-
-
-
-
 import com.codename1.social.Login;
+import com.codename1.googlemaps.MapContainer;
+import com.codename1.components.InfiniteProgress;
+
 
 
 /**
@@ -60,7 +53,7 @@ public class Tiles {
     public Cloudinary cloudinary;
     public int displayWidth;
     public int displayHeight;
-    private String HTML_API_KEY = "AIzaSyBKwXKAsfDSTiDHyWQ5126q6bnkuOiBNVc";
+    private String HTML_API_KEY = "AIzaSyCZh3V0mS5yioBLG5_SnpaAc3XjJOj2ioI";
     private final String[] finalAddress = {""};
     private Coord coordinates = new Coord(0,0);
     private String formattedLng = "";
@@ -292,9 +285,11 @@ public class Tiles {
     });
         Button selectImage = new Button("Done");
         selectImage.addActionListener(evt -> {
+            Dialog ip = new InfiniteProgress().showInifiniteBlocking();
             params.put("imageURL", globalBase.uploadImage(globalFilePath).get("url").toString());
             globalImage = globalBase.getImage(params.get("imageURL"), Display.getInstance().getDisplayWidth(), Display.getInstance().getDisplayHeight());
             globalBase.addPost(params);
+            ip.dispose();
             viewEvent(params.get("eventID")).show();
 
         });
@@ -311,34 +306,41 @@ public class Tiles {
         System.out.println("HELLO");
         ArrayList<Map<String, Object>> event = globalBase.getEventById(identifier);
         Map<String, Object> event1 = event.get(0);
-        Form viewEventForm = new Form();
-        viewEventForm.setToolbar(new Toolbar());
+        Form viewEventForm = new Form(new BoxLayout(BoxLayout.Y_AXIS));
         viewEventForm.setTitle(event1.get("Title").toString());
-        viewEventForm.setLayout(new BoxLayout(BoxLayout.Y_AXIS));
-        Image image = globalBase.getImage(event1.get("ImageURL").toString(), viewEventForm.getWidth(), viewEventForm.getHeight()/5);
-        Style stitle = new Style();
-        stitle.setBgImage(image);
-        stitle.setBgColor(0x9300FF);
-        stitle.setBackgroundType(Style.BACKGROUND_IMAGE_SCALED_FILL);
-        stitle.setPaddingUnit(Style.UNIT_TYPE_DIPS, Style.UNIT_TYPE_DIPS, Style.UNIT_TYPE_DIPS, Style.UNIT_TYPE_DIPS);
-        stitle.setPaddingTop(30);
-        stitle.setPaddingLeft(10);
-        stitle.setPaddingRight(10);
-        stitle.setMarginBottom(0);
+        Image image = globalBase.getImage(event1.get("ImageURL").toString(), viewEventForm.getWidth(), viewEventForm.getWidth());
+        Style toolBarStyle = new Style();
+
+        //stitle.setBgImage(image);
+        toolBarStyle.setBgColor(0x9300FF);
+        Label imageLabel = new Label(image);
+        toolBarStyle.setMargin(0,0,0,0);
 
 
+        Container topBarInfo = new Container(new BoxLayout(BoxLayout.Y_AXIS));
+        Button location = new Button(event1.get("Location").toString());
+        location.setUIID("Label");
+        Style organizationStyle = new Style();
         Label organization = new Label(event1.get("Organization").toString());
+        organization.setUnselectedStyle(organizationStyle);
+        topBarInfo.add(organization).add(location);
+
+
+        Container dateAndDescription = new Container(new BoxLayout(BoxLayout.Y_AXIS));
         Label dateTime = new Label(event1.get("Date").toString()+ " " + event1.get("Time").toString());
-        Label responses = new Label(event1.get("Responses").toString());
-        Container justTheFourOfUs = new Container();
-        justTheFourOfUs.setLayout(new BoxLayout(BoxLayout.X_AXIS));
-        justTheFourOfUs.add(organization).add(dateTime). add(responses);
-        Label location = new Label(event1.get("Location").toString());
         SpanLabel description = new SpanLabel(event1.get("Description").toString());
-        viewEventForm.add(justTheFourOfUs).add(description).add(location);
+        dateAndDescription.add(dateTime).add(description);
 
+        viewEventForm.getToolbar().addMaterialCommandToRightBar("", FontImage.MATERIAL_THUMB_UP, e->{
 
-        viewEventForm.getToolbar().setUnselectedStyle(stitle);
+            String responsesString = event1.get("Responses").toString();
+            int responseInt = Integer.parseInt(responsesString);
+            responseInt+=1;
+            String resultResponses = Integer.toString(responseInt);
+            globalBase.updateResponses(identifier,resultResponses);
+        });
+
+        viewEventForm.getToolbar().setUnselectedStyle(toolBarStyle);
         viewEventForm.getToolbar().addMaterialCommandToSideMenu("Home", FontImage.MATERIAL_HOME, e -> {
             tileForm().show();});
         viewEventForm.getToolbar().addMaterialCommandToSideMenu("Create", FontImage.MATERIAL_PLUS_ONE, e -> {
@@ -346,8 +348,33 @@ public class Tiles {
         viewEventForm.getToolbar().addMaterialCommandToSideMenu("Settings", FontImage.MATERIAL_SETTINGS, e -> {});
         viewEventForm.getToolbar().addMaterialCommandToSideMenu("My Profile", FontImage.MATERIAL_PERSON, e -> {});
 
-        ComponentAnimation title = viewEventForm.getToolbar().createStyleAnimation("Toolbar", 200);
+        ComponentAnimation title = viewEventForm.getToolbar().createStyleAnimation("Container", 200);
         viewEventForm.getAnimationManager().onTitleScrollAnimation(title);
+
+
+        Form mapForm = new Form(event1.get("Location").toString());
+        final MapContainer cnt = new MapContainer(HTML_API_KEY);
+
+        Style s = new Style();
+        s.setFgColor(0xff0000);
+        FontImage markerImg = FontImage.createMaterial(FontImage.MATERIAL_PLACE, s, Display.getInstance().convertToPixels(3));
+        FontImage placesDirect = FontImage.createMaterial(FontImage.MATERIAL_ARROW_FORWARD, s);
+        double dlat = Double.parseDouble(event1.get("Latitude").toString());
+        double dlong = Double.parseDouble(event1.get("Longitude").toString());
+        Coord coordinates = new Coord(dlat, dlong);
+
+        cnt.setCameraPosition(coordinates);
+        cnt.addMarker(EncodedImage.createFromImage(markerImg, false), coordinates, event1.get("Title").toString(), "", e-> {});
+
+        mapForm.add(cnt);
+        location.addActionListener(evt->{
+            mapForm.show();
+        });
+
+
+        viewEventForm.add(topBarInfo).add(imageLabel).add(dateAndDescription);
+
+
 
 
         return viewEventForm;
@@ -566,8 +593,12 @@ public class Tiles {
         });
 
 
+
+
+
         return formReturned;
     }
+
 
 
     void doLogin(Login lg, UserData data, boolean forceLogin) {
