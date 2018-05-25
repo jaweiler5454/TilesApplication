@@ -4,6 +4,7 @@
     <image name="android-icon.png" type="multi"  />
     <image name="apple-icon.png" type="multi"  />
     <image name="back-command.png" type="multi"  />
+    <legacyFont name="Ballpark" />
     <image name="border.png"  />
     <image name="Button.dis#borderBottom_1.png" type="multi"  />
     <image name="Button.dis#borderBottomL_1.png" type="multi"  />

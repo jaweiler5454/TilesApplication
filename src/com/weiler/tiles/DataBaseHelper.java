@@ -207,6 +207,7 @@ public class DataBaseHelper {
             }
             NetworkManager.getInstance().addToQueueAndWait(r);
             Map<String,Object> result = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData()), "UTF-8"));
+            System.out.println("workeddddd");
             return Boolean.parseBoolean(result.get("worked").toString());
         } catch(Exception err) {
             Log.e(err);

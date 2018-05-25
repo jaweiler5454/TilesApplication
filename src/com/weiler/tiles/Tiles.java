@@ -48,6 +48,7 @@ public class Tiles {
     private Image milton;
     private String fullName;
     private String uniqueId;
+    private String getEmail;
     private String imageURL;
     private Form createEvent;
     public Cloudinary cloudinary;
@@ -107,24 +108,37 @@ public class Tiles {
 
 
         //hi.show();
-        //showLoginForm();
-        tileForm().show();
-        System.out.println(globalBase.getPosts("milton_academy"));
-
-        System.out.println("WIDTH= " + Display.getInstance().getDisplayWidth() + " HEIGHT= " +Display.getInstance().getDisplayHeight());
+        showLoginForm();
+      //  tileForm().show();
 
     }
 
     private void showLoginForm() {
-        Form loginForm = new Form();
-        loginForm.setLayout(new BorderLayout());
+        Form loginForm = new Form(new BorderLayout());
+        Container containerForm = new Container();
+        containerForm.setLayout(new BorderLayout());
+
         Style loginStyle = new Style();
         loginStyle.setBgColor(0x9300FF);
+        loginStyle.setPaddingBottom(15);
+        loginStyle.setPaddingRight(10);
+        loginStyle.setPaddingLeft(10);
+        loginStyle.setMargin(0,0,0,0);
+        containerForm.setWidth(displayWidth);
+        containerForm.setHeight(displayHeight);
+        containerForm.setUnselectedStyle(loginStyle);
+        containerForm.setSelectedStyle(loginStyle);
+        loginForm.getToolbar().hideToolbar();
+        loginForm.getToolbar().setUIID("Container");
+
+
+
         Label titleLabel = new Label("Tiles");
         Style labelStyle = new Style();
         //labelStyle.setFont(ballpark1);
+        labelStyle.setFgColor(0xffffff);
+        labelStyle.setBgColor(0x9300FF);
         titleLabel.setUnselectedStyle(labelStyle);
-        loginForm.setUnselectedStyle(loginStyle);
 
 
 
@@ -153,7 +167,8 @@ public class Tiles {
             System.out.println("114670128593389003041");
         });
 
-        loginForm.add(BorderLayout.CENTER, titleLabel).add(BorderLayout.SOUTH, loginWithGoogle);
+        containerForm.add(BorderLayout.CENTER, titleLabel).add(BorderLayout.SOUTH, loginWithGoogle);
+        loginForm.add(BorderLayout.CENTER, containerForm);
         loginForm.show();
     }
 
@@ -223,8 +238,8 @@ public class Tiles {
             params.put("longitude", formattedLng);
             params.put("location", finalAddressTrue);
             params.put("description", description.getText());
-            params.put("userPosted", "jaweiler5454@gmail.com");
-            params.put("responses", "10");
+            params.put("userPosted", uniqueId);
+            params.put("responses", "0");
             params.put("schoolID", "milton_academy");
             //params.put("imageURL", "milton.edu");
             params.put("date", "");
@@ -287,7 +302,7 @@ public class Tiles {
         selectImage.addActionListener(evt -> {
             Dialog ip = new InfiniteProgress().showInifiniteBlocking();
             params.put("imageURL", globalBase.uploadImage(globalFilePath).get("url").toString());
-            globalImage = globalBase.getImage(params.get("imageURL"), Display.getInstance().getDisplayWidth(), Display.getInstance().getDisplayHeight());
+            globalImage = globalBase.getImage(params.get("imageURL"), 1, 1);
             globalBase.addPost(params);
             ip.dispose();
             viewEvent(params.get("eventID")).show();
@@ -617,7 +632,8 @@ public class Tiles {
                 if(tokenExpires < 0 || tokenExpires > System.currentTimeMillis()) {
                     // we are still logged in
                     System.out.println("We are still logged in");
-                    createEvent.show();
+                    tileForm().show();
+                    System.out.println(getEmail);
                     return;
                 }
             }
@@ -638,18 +654,28 @@ public class Tiles {
                     uniqueId = data.getId();
                     fullName = data.getName();
                     imageURL = data.getImage();
+                    getEmail = data.getEmail();
+                    System.out.println(getEmail);
+
                     ArrayList<Map<String, Object>> dict = globalBase.getUsers();
-                    if(!dict.get(0).containsKey(uniqueId))
+                    ArrayList ids = new ArrayList<String>();
+                    for(int i=0; i<dict.size(); i++)
                     {
-                        Map<String,String> params = new HashMap<String, String>();
+                        ids.add(dict.get(i).toString());
+                    }
+
+                    if (ids.contains(uniqueId)) {
+                        System.out.println(globalBase.getUsers().toString());
+                        }
+                        else{
+                        Map<String, String> params = new HashMap<String, String>();
                         params.put("id", uniqueId);
                         params.put("name", fullName);
-                        params.put("email", "john_weiler18@milton.edu");
+                        params.put("email", "jaweiler5454@gmail.com");
                         params.put("events", "");
                         params.put("eventsGoing", "");
                         globalBase.addUser(params);
-                    }
-
+                        }
                     // we then store the data into local cached storage so they will be around when we run the app next time
                     Preferences.set("fullName", fullName);
                     Preferences.set("uniqueId", uniqueId);
@@ -660,7 +686,7 @@ public class Tiles {
                     // reference it in the future to check expiration
                     Preferences.set(tokenPrefix + "tokenExpires", tokenExpirationInMillis(lg.getAccessToken()));
                     System.out.println("wassup");
-                    createEvent.show();
+                    tileForm().show();
                 });
             }
         });
@@ -699,6 +725,7 @@ public class Tiles {
 
     static interface UserData {
         public String getName();
+        public String getEmail();
         public String getId();
         public String getImage();
         public void fetchData(String token, Runnable callback);
@@ -714,9 +741,17 @@ public class Tiles {
         }
 
         @Override
+        public String getEmail() {
+
+            System.out.println(parsedData.get("emails").getClass());
+            return (String) parsedData.get("emails");
+        }
+
+        @Override
         public String getId() {
             return parsedData.get("id").toString();
         }
+
 
         @Override
         public String getImage() {
@@ -731,6 +766,7 @@ public class Tiles {
             setUrl("https://www.googleapis.com/plus/v1/people/me");
             setPost(false);
             NetworkManager.getInstance().addToQueue(this);
+
         }
 
         @Override
