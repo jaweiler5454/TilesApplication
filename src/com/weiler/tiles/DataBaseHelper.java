@@ -116,15 +116,17 @@ public class DataBaseHelper {
         return hello;
     }
 
-    public Map<String, Object> getUserByID(String id){
+    public ArrayList<Map<String, Object>> getUserByID(String id){
         try {
             ConnectionRequest r = new ConnectionRequest();
-            r.setUrl("http://tutormilton.ma1geek.org/getUser.php");
+            r.setUrl("http://tilessubdomain.ma1geek.org/getUsersById.php");
             r.setPost(false);
             r.addArgument("id",id);
             NetworkManager.getInstance().addToQueueAndWait(r);
             Map<String,Object> result = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData()), "UTF-8"));
-            return result;
+            ArrayList<Map<String, Object>> content = (ArrayList<Map<String, Object>>)result.get("root");
+            return content;
+
         } catch(Exception err) {
             Log.e(err);
             return null;
@@ -142,6 +144,25 @@ public class DataBaseHelper {
             r.setPost(true);
             r.addArgument("eventID",id);
             r.addArgument("responses", responses);
+            NetworkManager.getInstance().addToQueueAndWait(r);
+            Map<String,Object> result = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData()), "UTF-8"));
+            return result;
+        } catch(Exception err) {
+            Log.e(err);
+            return null;
+        }
+    	/* EXAMPLE
+   	 	DatabaseHelper base = new DatabaseHelper();
+        System.out.println(base.getUserByID("123456"));
+        */
+    }
+    public Map<String, Object> updateEventsGoing(String id, String eventsGoing){
+        try {
+            ConnectionRequest r = new ConnectionRequest();
+            r.setUrl("http://tilessubdomain.ma1geek.org/updateEventsGoing.php");
+            r.setPost(true);
+            r.addArgument("id",id);
+            r.addArgument("eventsGoing", eventsGoing);
             NetworkManager.getInstance().addToQueueAndWait(r);
             Map<String,Object> result = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData()), "UTF-8"));
             return result;

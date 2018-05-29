@@ -2,8 +2,7 @@ package com.weiler.tiles;
 
 import static com.codename1.ui.CN.*;
 
-import com.codename1.components.ImageViewer;
-import com.codename1.components.SpanLabel;
+import com.codename1.components.*;
 import com.codename1.io.*;
 
 import java.io.ByteArrayInputStream;
@@ -16,7 +15,9 @@ import com.codename1.ui.*;
 import com.codename1.ui.animations.ComponentAnimation;
 import com.codename1.ui.layouts.*;
 import com.codename1.ui.list.DefaultListModel;
+import com.codename1.ui.plaf.RoundBorder;
 import com.codename1.ui.plaf.UIManager;
+import com.codename1.ui.spinner.Picker;
 import com.codename1.ui.table.TableLayout;
 import com.codename1.ui.util.Resources;
 import java.io.IOException;
@@ -31,8 +32,8 @@ import com.codename1.ui.plaf.RoundRectBorder;
 import com.codename1.capture.Capture;
 import com.codename1.social.Login;
 import com.codename1.googlemaps.MapContainer;
-import com.codename1.components.InfiniteProgress;
-
+import javax.imageio.*;
+import javax.imageio.stream.ImageInputStream;
 
 
 /**
@@ -49,6 +50,7 @@ public class Tiles {
     private String fullName;
     private String uniqueId;
     private String getEmail;
+    private boolean isResponsesPressed = false;
     private String imageURL;
     private Form createEvent;
     public Cloudinary cloudinary;
@@ -58,12 +60,12 @@ public class Tiles {
     private final String[] finalAddress = {""};
     private Coord coordinates = new Coord(0,0);
     private String formattedLng = "";
+    private Style toolbarStyle = new Style();
     private String formattedLat = "";
     private DataBaseHelper globalBase = new DataBaseHelper();
     private Map<String, String> params = new HashMap<String, String>();
     private String globalFilePath;
     private Image globalImage = null;
-    //public Font ballpark1 = Font.createTrueTypeFont("ballpark", "ballpark_weiner.ttf").derive(36, Font.STYLE_PLAIN);
 
 
 
@@ -106,7 +108,8 @@ public class Tiles {
         }
 
 
-
+        toolbarStyle.setBgColor(0x9300FF);
+        toolbarStyle.setMargin(0,0,0,0);
         //hi.show();
         showLoginForm();
       //  tileForm().show();
@@ -130,6 +133,7 @@ public class Tiles {
         containerForm.setSelectedStyle(loginStyle);
         loginForm.getToolbar().hideToolbar();
         loginForm.getToolbar().setUIID("Container");
+        loginForm.setUnselectedStyle(loginStyle);
 
 
 
@@ -144,6 +148,12 @@ public class Tiles {
 
         Button loginWithGoogle = new Button("Sign in with Google");
         loginWithGoogle.setUIID("LoginButtonGoogle");
+        Image img = globalBase.getImage("http://res.cloudinary.com/tiles/image/upload/v1527606662/sign-in-with-google.png", 1,1);
+        Style buttonStyle = new Style();
+        buttonStyle.setBgImage(img);
+        loginWithGoogle.setUnselectedStyle(buttonStyle);
+        loginWithGoogle.setSelectedStyle(buttonStyle);
+        loginWithGoogle.setPressedStyle(buttonStyle);
         loginWithGoogle.addActionListener((e) -> {
             tokenPrefix = "google";
             Login gc = GoogleConnect.getInstance();
@@ -167,8 +177,8 @@ public class Tiles {
             System.out.println("114670128593389003041");
         });
 
-        containerForm.add(BorderLayout.CENTER, titleLabel).add(BorderLayout.SOUTH, loginWithGoogle);
-        loginForm.add(BorderLayout.CENTER, containerForm);
+        loginForm.add(BorderLayout.CENTER, titleLabel).add(BorderLayout.SOUTH, loginWithGoogle);
+  //      loginForm.add(BorderLayout.CENTER, containerForm);
         loginForm.show();
     }
 
@@ -179,10 +189,12 @@ public class Tiles {
         TextModeLayout textModeLayout = new TextModeLayout(3,2);
         Form helloForm = new Form("Add an Event", textModeLayout);
 
+
+
         TextComponent title = new TextComponent().label("Title");
         TextComponent organization = new TextComponent().label("Organization");
         TextComponent description = new TextComponent().label("Description").multiline(true);
-        PickerComponent dateComponent = PickerComponent.createDate(new Date()).label("Date");
+        PickerComponent dateComponent = PickerComponent.createDateTime(new Date()).label("Date and Time");
         Container forAc = new Container();
 
 
@@ -216,11 +228,7 @@ public class Tiles {
         System.out.println(getAddress);
         forAc.add(new Label("Location")).add(ac);
 
-
-
-
-        Button addData = new Button("Add New Tile");
-        addData.addActionListener(evt -> {
+        helloForm.getToolbar().addMaterialCommandToRightBar("", FontImage.MATERIAL_ARROW_FORWARD, e->{
             System.out.println("hello");
             DataBaseHelper base = new DataBaseHelper();
 
@@ -248,11 +256,58 @@ public class Tiles {
             imageCreation().show();
         });
 
+        helloForm.getToolbar().addMaterialCommandToSideMenu("Home", FontImage.MATERIAL_HOME, e -> {
+            tileForm().show();});
+        helloForm.getToolbar().addMaterialCommandToSideMenu("Create", FontImage.MATERIAL_PLUS_ONE, e -> {
+           helloForm.show();});
+        helloForm.getToolbar().addMaterialCommandToSideMenu("Settings", FontImage.MATERIAL_SETTINGS, e -> {showSettings();});
+        helloForm.getToolbar().addMaterialCommandToSideMenu("My Profile", FontImage.MATERIAL_PERSON, e -> {profileForm().show();});
+        helloForm.getToolbar().setUnselectedStyle(toolbarStyle);
 
-        helloForm.add(title).add(organization).add(dateComponent).add(description).add(forAc).add(addData);
+        helloForm.add(title).add(organization).add(dateComponent).add(description).add(forAc);
 
         return helloForm;
 
+    }
+
+    public void showSettings()
+    {
+        Form settingsForm = new Form("Settings");
+        Button logoutButton = new Button("Logout");
+        logoutButton.setUIID("LoginButtonGoogle");
+        Button cancel = new Button("Cancel");
+        Button reallyDoLogout = new Button("Logout");
+
+        settingsForm.getToolbar().addMaterialCommandToSideMenu("Home", FontImage.MATERIAL_HOME, e -> {
+            tileForm().show();});
+        settingsForm.getToolbar().addMaterialCommandToSideMenu("Create", FontImage.MATERIAL_PLUS_ONE, e -> {
+            addTile().show();});
+        settingsForm.getToolbar().addMaterialCommandToSideMenu("Settings", FontImage.MATERIAL_SETTINGS, e -> {showSettings();});
+        settingsForm.getToolbar().addMaterialCommandToSideMenu("My Profile", FontImage.MATERIAL_PERSON, e -> {profileForm().show();});
+        settingsForm.getToolbar().setUnselectedStyle(toolbarStyle);
+
+
+        Login lg = GoogleConnect.getInstance();
+        Dialog dlg = new Dialog("Do you really wish to logout?");
+        dlg.setLayout(new BoxLayout(BoxLayout.X_AXIS));
+        cancel.addActionListener(evt -> {dlg.dispose();});
+        dlg.add(cancel);
+        reallyDoLogout.addActionListener(e->{
+
+
+            uniqueId = "0";
+            fullName = "0";
+            imageURL = "0";
+            showLoginForm();
+
+
+        });
+        dlg.add(reallyDoLogout);
+        logoutButton.addActionListener(evt->{
+            dlg.show();
+        });
+        settingsForm.add(logoutButton);
+        settingsForm.show();
     }
 
 
@@ -321,41 +376,55 @@ public class Tiles {
         System.out.println("HELLO");
         ArrayList<Map<String, Object>> event = globalBase.getEventById(identifier);
         Map<String, Object> event1 = event.get(0);
+        ArrayList<Map<String, Object>> userDatas = globalBase.getUserByID(uniqueId);
+        Map<String, Object>  userDatas1 = userDatas.get(0);
+
+
         Form viewEventForm = new Form(new BoxLayout(BoxLayout.Y_AXIS));
         viewEventForm.setTitle(event1.get("Title").toString());
         Image image = globalBase.getImage(event1.get("ImageURL").toString(), viewEventForm.getWidth(), viewEventForm.getWidth());
-        Style toolBarStyle = new Style();
+        viewEventForm.setScrollable(false);
 
         //stitle.setBgImage(image);
-        toolBarStyle.setBgColor(0x9300FF);
         Label imageLabel = new Label(image);
-        toolBarStyle.setMargin(0,0,0,0);
+        imageLabel.setWidth(displayWidth);
 
 
-        Container topBarInfo = new Container(new BoxLayout(BoxLayout.Y_AXIS));
         Button location = new Button(event1.get("Location").toString());
         location.setUIID("Label");
         Style organizationStyle = new Style();
         Label organization = new Label(event1.get("Organization").toString());
         organization.setUnselectedStyle(organizationStyle);
-        topBarInfo.add(organization).add(location);
 
 
-        Container dateAndDescription = new Container(new BoxLayout(BoxLayout.Y_AXIS));
         Label dateTime = new Label(event1.get("Date").toString()+ " " + event1.get("Time").toString());
         SpanLabel description = new SpanLabel(event1.get("Description").toString());
-        dateAndDescription.add(dateTime).add(description);
 
-        viewEventForm.getToolbar().addMaterialCommandToRightBar("", FontImage.MATERIAL_THUMB_UP, e->{
+        FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_THUMB_UP);
+        fab.addActionListener(evt->{
+            if(userDatas1.get("EventsGoing").toString().contains(identifier)){
+                fab.setUnselectedStyle(fab.getSelectedStyle());
 
-            String responsesString = event1.get("Responses").toString();
-            int responseInt = Integer.parseInt(responsesString);
-            responseInt+=1;
-            String resultResponses = Integer.toString(responseInt);
-            globalBase.updateResponses(identifier,resultResponses);
+            }
+            else{
+                String responsesString = event1.get("Responses").toString();
+                int responseInt = Integer.parseInt(responsesString);
+                responseInt += 1;
+                String resultResponses = Integer.toString(responseInt);
+                String resultResponseIds = userDatas1.get("EventsGoing").toString();
+                String updatedEventsGoing = resultResponseIds.concat(identifier).concat(", ");
+                globalBase.updateEventsGoing(uniqueId, updatedEventsGoing);
+                globalBase.updateResponses(identifier, resultResponses);
+            }
+
         });
+        fab.bindFabToContainer(viewEventForm);
 
-        viewEventForm.getToolbar().setUnselectedStyle(toolBarStyle);
+      //  fab.bindFabToContainer(imageLabel);
+
+
+
+        viewEventForm.getToolbar().setUnselectedStyle(toolbarStyle);
         viewEventForm.getToolbar().addMaterialCommandToSideMenu("Home", FontImage.MATERIAL_HOME, e -> {
             tileForm().show();});
         viewEventForm.getToolbar().addMaterialCommandToSideMenu("Create", FontImage.MATERIAL_PLUS_ONE, e -> {
@@ -369,6 +438,7 @@ public class Tiles {
 
         Form mapForm = new Form(event1.get("Location").toString());
         final MapContainer cnt = new MapContainer(HTML_API_KEY);
+        mapForm.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, evt -> {viewEventForm.show();});
 
         Style s = new Style();
         s.setFgColor(0xff0000);
@@ -387,7 +457,7 @@ public class Tiles {
         });
 
 
-        viewEventForm.add(topBarInfo).add(imageLabel).add(dateAndDescription);
+        viewEventForm.add(organization).add(location).add(imageLabel).add(dateTime).add(description);
 
 
 
@@ -536,8 +606,8 @@ public class Tiles {
             formReturned.show();});
         formReturned.getToolbar().addMaterialCommandToSideMenu("Create", FontImage.MATERIAL_PLUS_ONE, e -> {
         addTile().show();});
-        formReturned.getToolbar().addMaterialCommandToSideMenu("Settings", FontImage.MATERIAL_SETTINGS, e -> {});
-        formReturned.getToolbar().addMaterialCommandToSideMenu("My Profile", FontImage.MATERIAL_PERSON, e -> {});
+        formReturned.getToolbar().addMaterialCommandToSideMenu("Settings", FontImage.MATERIAL_SETTINGS, e -> {showSettings();});
+        formReturned.getToolbar().addMaterialCommandToSideMenu("My Profile", FontImage.MATERIAL_PERSON, e -> {profileForm().show();});
         formReturned.getToolbar().setUnselectedStyle(toolbarStyle);
 
 
@@ -615,6 +685,42 @@ public class Tiles {
     }
 
 
+    public Form profileForm()
+    {
+        Form formReturned = new Form("My Profile", new BoxLayout(BoxLayout.Y_AXIS));
+        Image img = null;
+        Container imgContainer = new Container();
+        imgContainer.setWidth(displayWidth/5);
+        imgContainer.setHeight(displayHeight/5);
+        Style imageStyle= new Style();
+
+        try {
+            Image imgHolder = Image.createImage(imgContainer.getWidth(), imgContainer.getHeight(), 0x9300ff);
+            EncodedImage placeholder = EncodedImage.createFromImage(imgHolder, false);
+            img = URLImage.createToStorage(placeholder, "profImg", imageURL);
+        }
+        catch(Exception e)
+        {
+            System.out.println(e + "AN EXEPCAION");
+        }
+
+
+        imageStyle.setBorder(RoundBorder.create());
+        imageStyle.setBgImage(img);
+        imageStyle.setAlignment(Component.CENTER);
+        imgContainer.setUnselectedStyle(imageStyle);
+        formReturned.add(imgContainer);
+
+        formReturned.getToolbar().addMaterialCommandToSideMenu("Home", FontImage.MATERIAL_HOME, e -> {
+            tileForm().show();});
+        formReturned.getToolbar().addMaterialCommandToSideMenu("Create", FontImage.MATERIAL_PLUS_ONE, e -> {
+            addTile().show();});
+        formReturned.getToolbar().addMaterialCommandToSideMenu("Settings", FontImage.MATERIAL_SETTINGS, e -> {showSettings();});
+        formReturned.getToolbar().addMaterialCommandToSideMenu("My Profile", FontImage.MATERIAL_PERSON, e -> {formReturned.show();});
+        formReturned.getToolbar().setUnselectedStyle(toolbarStyle);
+
+        return formReturned;
+    }
 
     void doLogin(Login lg, UserData data, boolean forceLogin) {
         if(!forceLogin) {
@@ -657,6 +763,7 @@ public class Tiles {
                     getEmail = data.getEmail();
                     System.out.println(getEmail);
 
+
                     ArrayList<Map<String, Object>> dict = globalBase.getUsers();
                     ArrayList ids = new ArrayList<String>();
                     for(int i=0; i<dict.size(); i++)
@@ -671,9 +778,12 @@ public class Tiles {
                         Map<String, String> params = new HashMap<String, String>();
                         params.put("id", uniqueId);
                         params.put("name", fullName);
-                        params.put("email", "jaweiler5454@gmail.com");
+                        params.put("email", getEmail);
                         params.put("events", "");
                         params.put("eventsGoing", "");
+                        params.put("bio", "");
+                        params.put("imageURL", imageURL);
+                        params.put("organizations", "");
                         globalBase.addUser(params);
                         }
                     // we then store the data into local cached storage so they will be around when we run the app next time
@@ -740,11 +850,11 @@ public class Tiles {
             return (String) parsedData.get("displayName");
         }
 
-        @Override
-        public String getEmail() {
 
-            System.out.println(parsedData.get("emails").getClass());
-            return (String) parsedData.get("emails");
+        public String getEmail() {
+           String dataString = parsedData.get("emails").toString();
+           return dataString.substring(8, dataString.indexOf(","));
+
         }
 
         @Override

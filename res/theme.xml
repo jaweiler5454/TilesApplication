@@ -6,6 +6,15 @@
     <image name="back-command.png" type="multi"  />
     <legacyFont name="Ballpark" />
     <image name="border.png"  />
+    <image name="Button.borderBottom_1.png" type="multi"  />
+    <image name="Button.borderBottomL_1.png" type="multi"  />
+    <image name="Button.borderBottomR_1.png" type="multi"  />
+    <image name="Button.borderCenter_1.png" type="multi"  />
+    <image name="Button.borderLeft_1.png" type="multi"  />
+    <image name="Button.borderRight_1.png" type="multi"  />
+    <image name="Button.borderTop_1.png" type="multi"  />
+    <image name="Button.borderTopL_1.png" type="multi"  />
+    <image name="Button.borderTopR_1.png" type="multi"  />
     <image name="Button.dis#borderBottom_1.png" type="multi"  />
     <image name="Button.dis#borderBottomL_1.png" type="multi"  />
     <image name="Button.dis#borderBottomR_1.png" type="multi"  />
@@ -116,9 +125,10 @@
         <val key="@switchOnImage" value="switch_on.png" />
         <val key="@tabPlacementInt" value="0" />
         <val key="Button.align" value="4" />
-        <gradient key="Button.bgGradient" color1="0" color2="0" posX="0.5" posY="0.5" radius="1.0" />
+        <val key="Button.bgColor" value="9300ff" />
+        <gradient key="Button.bgGradient" color1="9634047" color2="0" posX="0.5" posY="0.5" radius="1.0" />
         <val key="Button.bgType" value="0" />
-        <border key="Button.border" type="image" i1="OKGR.borderTop_1.png" i2="OKGR.borderBottom_1.png" i3="OKGR.borderLeft_1.png" i4="OKGR.borderRight_1.png" i5="OKGR.borderTopL_1.png" i6="OKGR.borderTopR_1.png" i7="OKGR.borderBottomL_1.png" i8="OKGR.borderBottomR_1.png" i9="OKGR.borderCenter_1.png" />
+        <border key="Button.border" type="image" i1="Button.borderTop_1.png" i2="Button.borderBottom_1.png" i3="Button.borderLeft_1.png" i4="Button.borderRight_1.png" i5="Button.borderTopL_1.png" i6="Button.borderTopR_1.png" i7="Button.borderBottomL_1.png" i8="Button.borderBottomR_1.png" i9="Button.borderCenter_1.png" />
         <val key="Button.dis#align" value="4" />
         <gradient key="Button.dis#bgGradient" color1="0" color2="0" posX="0.5" posY="0.5" radius="1.0" />
         <val key="Button.dis#bgType" value="0" />
@@ -130,7 +140,6 @@
         <val key="Button.dis#padUnit" value="2,2,2,2" />
         <val key="Button.dis#padding" value="1.0,1.0,1.0,1.0" />
         <val key="Button.dis#transparency" value="0" />
-        <val key="Button.fgColor" value="ffffff" />
         <font key="Button.font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="3.0" />
         <val key="Button.marUnit" value="2,2,2,2" />
         <val key="Button.margin" value="1.0,1.0,1.0,1.0" />
@@ -158,7 +167,7 @@
         <val key="Button.sel#padUnit" value="2,2,2,2" />
         <val key="Button.sel#padding" value="1.0,1.0,1.0,1.0" />
         <val key="Button.sel#transparency" value="0" />
-        <val key="Button.transparency" value="0" />
+        <val key="Button.transparency" value="100" />
         <val key="CalendarDate.bgColor" value="3399ff" />
         <val key="CalendarDate.fgColor" value="0" />
         <val key="CalendarDate.margin" value="0.0,0.0,0.0,0.0" />
@@ -820,6 +829,8 @@
         <val key="ToggleButton.sel#padUnit" value="2,2,2,2" />
         <val key="ToggleButton.sel#padding" value="1.0,1.0,1.0,1.0" />
         <val key="ToggleButton.sel#transparency" value="0" />
+        <val key="Toolbar.bgImage" value="Button.borderCenter_1.png" />
+        <val key="Toolbar.bgType" value="33" />
         <val key="bgColor" value="ffffff" />
         <border key="border" type="empty" />
         <val key="fgColor" value="0" />
