@@ -140,6 +140,7 @@
         <val key="Button.dis#padUnit" value="2,2,2,2" />
         <val key="Button.dis#padding" value="1.0,1.0,1.0,1.0" />
         <val key="Button.dis#transparency" value="0" />
+        <val key="Button.fgColor" value="ffffff" />
         <font key="Button.font" type="ttf" face="0" style="0" size="0" name="native:MainRegular" family="native:MainRegular" sizeSettings="3" actualSize="3.0" />
         <val key="Button.marUnit" value="2,2,2,2" />
         <val key="Button.margin" value="1.0,1.0,1.0,1.0" />

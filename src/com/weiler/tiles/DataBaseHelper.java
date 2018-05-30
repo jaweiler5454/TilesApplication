@@ -159,7 +159,7 @@ public class DataBaseHelper {
     public Map<String, Object> updateEventsGoing(String id, String eventsGoing){
         try {
             ConnectionRequest r = new ConnectionRequest();
-            r.setUrl("http://tilessubdomain.ma1geek.org/updateEventsGoing.php");
+            r.setUrl("http://tilessubdomain.ma1geek.org/updateUserEventsGoing.php");
             r.setPost(true);
             r.addArgument("id",id);
             r.addArgument("eventsGoing", eventsGoing);

@@ -19,17 +19,17 @@
       <file leaf-file-name="Tiles.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/weiler/tiles/Tiles.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-1646">
-              <caret line="288" column="0" lean-forward="true" selection-start-line="288" selection-start-column="0" selection-end-line="288" selection-end-column="0" />
+            <state relative-caret-position="154">
+              <caret line="418" column="20" lean-forward="false" selection-start-line="418" selection-start-column="17" selection-end-line="418" selection-end-column="20" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#2234#2250#0" expanded="true" />
-                <element signature="e#23119#23126#0" expanded="true" />
-                <element signature="e#23184#23192#0" expanded="true" />
-                <element signature="e#29617#29633#0" expanded="true" />
-                <element signature="e#30558#30674#0" expanded="false" />
-                <element signature="e#33891#33892#0" expanded="true" />
-                <element signature="e#33929#33930#0" expanded="true" />
+                <element signature="e#2288#2304#0" expanded="true" />
+                <element signature="e#25781#25788#0" expanded="true" />
+                <element signature="e#25846#25854#0" expanded="true" />
+                <element signature="e#32343#32359#0" expanded="true" />
+                <element signature="e#33284#33400#0" expanded="false" />
+                <element signature="e#36617#36618#0" expanded="true" />
+                <element signature="e#36655#36656#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -58,8 +58,8 @@
       <file leaf-file-name="DataBaseHelper.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/weiler/tiles/DataBaseHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="154">
-              <caret line="71" column="25" lean-forward="false" selection-start-line="71" selection-start-column="17" selection-end-line="71" selection-end-column="25" />
+            <state relative-caret-position="124">
+              <caret line="164" column="54" lean-forward="false" selection-start-line="164" selection-start-column="54" selection-end-line="164" selection-end-column="54" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -78,36 +78,36 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>getUserBy</find>
-      <find>update</find>
-      <find>responses</find>
-      <find>@Override</find>
-      <find>BoxLay</find>
-      <find>Container</find>
-      <find>fab.add</find>
-      <find>setBgColor</find>
-      <find>toolbarStyle</find>
-      <find>ballpark</find>
-      <find>showLoginForm</find>
-      <find>sidemen</find>
-      <find>showSettings</find>
-      <find>DoLogin</find>
-      <find>tokenExpirationinMillis</find>
-      <find>email</find>
-      <find>getEmail</find>
-      <find>ids.contains</find>
-      <find>FileSystem</find>
-      <find>theme</find>
-      <find>ViewEvent</find>
-      <find>getImag</find>
       <find>roundBorder</find>
-      <find>getImage</find>
       <find>sidemenu</find>
       <find>tileForm</find>
       <find>tileForm()</find>
       <find>profile</find>
       <find>InputStream</find>
       <find>URL</find>
+      <find>showLoginForm</find>
+      <find>Login</find>
+      <find>token</find>
+      <find>ids</find>
+      <find>getImage</find>
+      <find>responses</find>
+      <find>addPullToRefresh</find>
+      <find>addPull</find>
+      <find>event</find>
+      <find>event1</find>
+      <find>logout</find>
+      <find>autocomplete</find>
+      <find>forAc</find>
+      <find>text</find>
+      <find>filter</find>
+      <find>dateTime</find>
+      <find>DateTime</find>
+      <find>dateComponent</find>
+      <find>searchLocations</find>
+      <find>HTML_API</find>
+      <find>imageCreation</find>
+      <find>FloatingActionButton</find>
+      <find>fab</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -752,13 +752,13 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2234#2250#0" expanded="true" />
-            <element signature="e#23119#23126#0" expanded="true" />
-            <element signature="e#23184#23192#0" expanded="true" />
-            <element signature="e#29617#29633#0" expanded="true" />
-            <element signature="e#30558#30674#0" expanded="false" />
-            <element signature="e#33891#33892#0" expanded="true" />
-            <element signature="e#33929#33930#0" expanded="true" />
+            <element signature="e#2288#2304#0" expanded="true" />
+            <element signature="e#25781#25788#0" expanded="true" />
+            <element signature="e#25846#25854#0" expanded="true" />
+            <element signature="e#32343#32359#0" expanded="true" />
+            <element signature="e#33284#33400#0" expanded="false" />
+            <element signature="e#36617#36618#0" expanded="true" />
+            <element signature="e#36655#36656#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -781,13 +781,13 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2234#2250#0" expanded="true" />
-            <element signature="e#23119#23126#0" expanded="true" />
-            <element signature="e#23184#23192#0" expanded="true" />
-            <element signature="e#29617#29633#0" expanded="true" />
-            <element signature="e#30558#30674#0" expanded="false" />
-            <element signature="e#33891#33892#0" expanded="true" />
-            <element signature="e#33929#33930#0" expanded="true" />
+            <element signature="e#2288#2304#0" expanded="true" />
+            <element signature="e#25781#25788#0" expanded="true" />
+            <element signature="e#25846#25854#0" expanded="true" />
+            <element signature="e#32343#32359#0" expanded="true" />
+            <element signature="e#33284#33400#0" expanded="false" />
+            <element signature="e#36617#36618#0" expanded="true" />
+            <element signature="e#36655#36656#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -810,13 +810,13 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2234#2250#0" expanded="true" />
-            <element signature="e#23119#23126#0" expanded="true" />
-            <element signature="e#23184#23192#0" expanded="true" />
-            <element signature="e#29617#29633#0" expanded="true" />
-            <element signature="e#30558#30674#0" expanded="false" />
-            <element signature="e#33891#33892#0" expanded="true" />
-            <element signature="e#33929#33930#0" expanded="true" />
+            <element signature="e#2288#2304#0" expanded="true" />
+            <element signature="e#25781#25788#0" expanded="true" />
+            <element signature="e#25846#25854#0" expanded="true" />
+            <element signature="e#32343#32359#0" expanded="true" />
+            <element signature="e#33284#33400#0" expanded="false" />
+            <element signature="e#36617#36618#0" expanded="true" />
+            <element signature="e#36655#36656#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -989,27 +989,35 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/weiler/tiles/DataBaseHelper.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="154">
-          <caret line="71" column="25" lean-forward="false" selection-start-line="71" selection-start-column="17" selection-end-line="71" selection-end-column="25" />
+        <state relative-caret-position="124">
+          <caret line="164" column="54" lean-forward="false" selection-start-line="164" selection-start-column="54" selection-end-line="164" selection-end-column="54" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="jar://$PROJECT_DIR$/lib/CodenameOne_SRC.zip!/com/codename1/ui/AutoCompleteTextField.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="163">
+          <caret line="54" column="0" lean-forward="false" selection-start-line="54" selection-start-column="0" selection-end-line="54" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/weiler/tiles/Tiles.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-1646">
-          <caret line="288" column="0" lean-forward="true" selection-start-line="288" selection-start-column="0" selection-end-line="288" selection-end-column="0" />
+        <state relative-caret-position="154">
+          <caret line="418" column="20" lean-forward="false" selection-start-line="418" selection-start-column="17" selection-end-line="418" selection-end-column="20" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2234#2250#0" expanded="true" />
-            <element signature="e#23119#23126#0" expanded="true" />
-            <element signature="e#23184#23192#0" expanded="true" />
-            <element signature="e#29617#29633#0" expanded="true" />
-            <element signature="e#30558#30674#0" expanded="false" />
-            <element signature="e#33891#33892#0" expanded="true" />
-            <element signature="e#33929#33930#0" expanded="true" />
+            <element signature="e#2288#2304#0" expanded="true" />
+            <element signature="e#25781#25788#0" expanded="true" />
+            <element signature="e#25846#25854#0" expanded="true" />
+            <element signature="e#32343#32359#0" expanded="true" />
+            <element signature="e#33284#33400#0" expanded="false" />
+            <element signature="e#36617#36618#0" expanded="true" />
+            <element signature="e#36655#36656#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -13,6 +13,7 @@ import com.codename1.processing.Result;
 import com.codename1.social.LoginCallback;
 import com.codename1.ui.*;
 import com.codename1.ui.animations.ComponentAnimation;
+import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.*;
 import com.codename1.ui.list.DefaultListModel;
 import com.codename1.ui.plaf.RoundBorder;
@@ -174,7 +175,6 @@ public class Tiles {
                 createEvent.show();
             }*/
             doLogin(gc, new GoogleData(), false);
-            System.out.println("114670128593389003041");
         });
 
         loginForm.add(BorderLayout.CENTER, titleLabel).add(BorderLayout.SOUTH, loginWithGoogle);
@@ -194,7 +194,8 @@ public class Tiles {
         TextComponent title = new TextComponent().label("Title");
         TextComponent organization = new TextComponent().label("Organization");
         TextComponent description = new TextComponent().label("Description").multiline(true);
-        PickerComponent dateComponent = PickerComponent.createDateTime(new Date()).label("Date and Time");
+        PickerComponent dateComponent = PickerComponent.createDate(new Date()).label("Date");
+        PickerComponent timeComponent = PickerComponent.createTime(0).label("Time");
         Container forAc = new Container();
 
 
@@ -205,7 +206,9 @@ public class Tiles {
                 if (text.length() == 0) {
                     return false;
                 }
+
                 String[] l = searchLocations(text);
+                System.out.println(text);
                 if (l == null || l.length == 0) {
                     return false;
                 }
@@ -235,6 +238,7 @@ public class Tiles {
             finalAddress[0] = ac.getText();
             final String finalAddressTrue = finalAddress[0];
             coordinates = geocode(finalAddressTrue);
+            System.out.println(coordinates);
             Double lng = coordinates.getLongitude();
             Double lat = coordinates.getLatitude();
             formattedLng = lng.toString();
@@ -250,8 +254,8 @@ public class Tiles {
             params.put("responses", "0");
             params.put("schoolID", "milton_academy");
             //params.put("imageURL", "milton.edu");
-            params.put("date", "");
-            params.put("time", "");
+            params.put("date", dateComponent.getPicker().getText());
+            params.put("time", timeComponent.getPicker().getText());
             params.put("organization", organization.getText());
             imageCreation().show();
         });
@@ -264,7 +268,7 @@ public class Tiles {
         helloForm.getToolbar().addMaterialCommandToSideMenu("My Profile", FontImage.MATERIAL_PERSON, e -> {profileForm().show();});
         helloForm.getToolbar().setUnselectedStyle(toolbarStyle);
 
-        helloForm.add(title).add(organization).add(dateComponent).add(description).add(forAc);
+        helloForm.add(title).add(organization).add(dateComponent).add(timeComponent).add(description).add(forAc);
 
         return helloForm;
 
@@ -298,6 +302,7 @@ public class Tiles {
             uniqueId = "0";
             fullName = "0";
             imageURL = "0";
+            Preferences.set(tokenPrefix + "token", null);
             showLoginForm();
 
 
@@ -315,12 +320,26 @@ public class Tiles {
     {
         System.out.println(params.get("imageURL"));
         Form imageForm = new Form("Choose an Image for Your Tile" , new BorderLayout());
-        Button browse = new Button("Browse for an Image");
-        Button cameraButton = new Button("Open Camera");
+        Image bgImage = globalBase.getImage("http://res.cloudinary.com/tiles/image/upload/v1527706265/upload.png", displayWidth, displayHeight);
+        Label imageLabel = new Label(bgImage);
+        imageForm.getToolbar().setUnselectedStyle(toolbarStyle);
+        imageForm.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, evt -> {
+            addTile().show();
+        });
 
-        imageForm.add(BorderLayout.NORTH, browse);
-        imageForm.add(BorderLayout.NORTH, cameraButton);
-        browse.addActionListener(evt -> {
+        FloatingActionButton browserButton = FloatingActionButton.createFAB(FontImage.MATERIAL_ADD_A_PHOTO);
+        browserButton.createSubFAB(FontImage.MATERIAL_CAMERA, "").addActionListener(e->{
+            String filePath = Capture.capturePhoto();
+            if(filePath != null) {
+                try {
+                    Image img = Image.createImage(filePath);
+
+                } catch(IOException err) {
+                    Log.e(err);
+                }
+            }
+        });
+        browserButton.createSubFAB(FontImage.MATERIAL_SEARCH, "").addActionListener(e->{
             Display.getInstance().openGallery(event ->{
                 if (event != null && event.getSource() != null) {
                     String filePath = (String) event.getSource();
@@ -330,8 +349,8 @@ public class Tiles {
                     Image img = null;
                     try {
                         img = Image.createImage(FileSystemStorage.getInstance().openInputStream(filePath));
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
                     }
                     globalImage = img;
                     ImageViewer iv = new ImageViewer(img);
@@ -342,17 +361,9 @@ public class Tiles {
 
             }, Display.GALLERY_IMAGE);
         });
-        cameraButton.addActionListener(et -> {
-        String filePath = Capture.capturePhoto();
-        if(filePath != null) {
-            try {
-                Image img = Image.createImage(filePath);
 
-            } catch(IOException err) {
-                Log.e(err);
-            }
-        }
-    });
+        browserButton.bindFabToContainer(imageForm);
+
         Button selectImage = new Button("Done");
         selectImage.addActionListener(evt -> {
             Dialog ip = new InfiniteProgress().showInifiniteBlocking();
@@ -363,6 +374,7 @@ public class Tiles {
             viewEvent(params.get("eventID")).show();
 
         });
+        imageForm.add(BorderLayout.CENTER, imageLabel);
         imageForm.add(BorderLayout.SOUTH, selectImage);
 
 
@@ -400,13 +412,31 @@ public class Tiles {
         Label dateTime = new Label(event1.get("Date").toString()+ " " + event1.get("Time").toString());
         SpanLabel description = new SpanLabel(event1.get("Description").toString());
 
+        FloatingActionButton checkFab = FloatingActionButton.createFAB(FontImage.MATERIAL_CHECK);
         FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_THUMB_UP);
-        fab.addActionListener(evt->{
-            if(userDatas1.get("EventsGoing").toString().contains(identifier)){
-                fab.setUnselectedStyle(fab.getSelectedStyle());
 
-            }
-            else{
+        if(userDatas1.get("EventsGoing").toString().contains(identifier)){
+            checkFab.bindFabToContainer(viewEventForm.getContentPane());
+        }
+        else{
+            fab.bindFabToContainer(viewEventForm.getContentPane());
+        }
+        checkFab.addActionListener(e->{
+            checkFab.remove();
+            fab.bindFabToContainer(viewEventForm.getContentPane());
+            String responsesString = event1.get("Responses").toString();
+            int responseInt = Integer.parseInt(responsesString);
+            responseInt -= 1;
+            String resultResponses = Integer.toString(responseInt);
+            String resultResponseIds = userDatas1.get("EventsGoing").toString();
+            String updatedEventsGoing = resultResponseIds.replace(identifier + ",", "");
+            globalBase.updateEventsGoing(uniqueId, updatedEventsGoing);
+            globalBase.updateResponses(identifier, resultResponses);
+        });
+
+        fab.addActionListener(evt->{
+                fab.remove();
+                checkFab.bindFabToContainer(viewEventForm.getContentPane());
                 String responsesString = event1.get("Responses").toString();
                 int responseInt = Integer.parseInt(responsesString);
                 responseInt += 1;
@@ -415,10 +445,10 @@ public class Tiles {
                 String updatedEventsGoing = resultResponseIds.concat(identifier).concat(", ");
                 globalBase.updateEventsGoing(uniqueId, updatedEventsGoing);
                 globalBase.updateResponses(identifier, resultResponses);
-            }
+
 
         });
-        fab.bindFabToContainer(viewEventForm);
+
 
       //  fab.bindFabToContainer(imageLabel);
 
@@ -435,8 +465,26 @@ public class Tiles {
         ComponentAnimation title = viewEventForm.getToolbar().createStyleAnimation("Container", 200);
         viewEventForm.getAnimationManager().onTitleScrollAnimation(title);
 
+        viewEventForm.addPullToRefresh(() -> {
 
-        Form mapForm = new Form(event1.get("Location").toString());
+            viewEventForm.setTitle(globalBase.getEventById(identifier).get(0).get("Title").toString());
+            viewEventForm.setScrollable(false);
+
+            //stitle.setBgImage(image);
+            imageLabel.setIcon(globalBase.getImage(event1.get("ImageURL").toString(), viewEventForm.getWidth(), viewEventForm.getWidth()));
+            imageLabel.setWidth(displayWidth);
+
+
+            location.setText(globalBase.getEventById(identifier).get(0).get("Location").toString());
+            organization.setText(globalBase.getEventById(identifier).get(0).get("Organization").toString());
+
+
+            dateTime.setText(globalBase.getEventById(identifier).get(0).get("Date").toString()+ " " + globalBase.getEventById(identifier).get(0).get("Time").toString());
+            description.setText(globalBase.getEventById(identifier).get(0).get("Description").toString());
+
+        });
+
+        Form mapForm = new Form(location.getText());
         final MapContainer cnt = new MapContainer(HTML_API_KEY);
         mapForm.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, evt -> {viewEventForm.show();});
 
@@ -730,6 +778,7 @@ public class Tiles {
                 return;
             }
 
+
             // if the user already logged in previously and we have a token
             String t = Preferences.get(tokenPrefix + "token", (String)null);
             if(t != null) {
@@ -760,6 +809,7 @@ public class Tiles {
                     uniqueId = data.getId();
                     fullName = data.getName();
                     imageURL = data.getImage();
+                    System.out.println(imageURL);
                     getEmail = data.getEmail();
                     System.out.println(getEmail);
 
@@ -768,11 +818,11 @@ public class Tiles {
                     ArrayList ids = new ArrayList<String>();
                     for(int i=0; i<dict.size(); i++)
                     {
-                        ids.add(dict.get(i).toString());
+                        ids.add(dict.get(i).get("Id").toString());
                     }
 
-                    if (ids.contains(uniqueId)) {
-                        System.out.println(globalBase.getUsers().toString());
+                        if (ids.contains(uniqueId)) {
+                        System.out.println("THIS USER ALREADY EXISTS, YO!");
                         }
                         else{
                         Map<String, String> params = new HashMap<String, String>();
