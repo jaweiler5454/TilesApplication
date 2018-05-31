@@ -20,17 +20,27 @@
         <entry file="file://$PROJECT_DIR$/src/com/weiler/tiles/Tiles.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="154">
-              <caret line="418" column="20" lean-forward="false" selection-start-line="418" selection-start-column="17" selection-end-line="418" selection-end-column="20" />
+              <caret line="431" column="28" lean-forward="false" selection-start-line="431" selection-start-column="19" selection-end-line="431" selection-end-column="28" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#2288#2304#0" expanded="true" />
-                <element signature="e#25781#25788#0" expanded="true" />
-                <element signature="e#25846#25854#0" expanded="true" />
-                <element signature="e#32343#32359#0" expanded="true" />
-                <element signature="e#33284#33400#0" expanded="false" />
-                <element signature="e#36617#36618#0" expanded="true" />
-                <element signature="e#36655#36656#0" expanded="true" />
+                <element signature="e#2293#2309#0" expanded="true" />
+                <element signature="e#26147#26154#0" expanded="true" />
+                <element signature="e#26212#26220#0" expanded="true" />
+                <element signature="e#32570#32586#0" expanded="true" />
+                <element signature="e#33511#33627#0" expanded="false" />
+                <element signature="e#36845#36846#0" expanded="true" />
+                <element signature="e#36883#36884#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Uploader.class" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/lib/impl/cls/com/cloudinary/Uploader.class">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="171">
+              <caret line="67" column="0" lean-forward="false" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -58,8 +68,8 @@
       <file leaf-file-name="DataBaseHelper.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/com/weiler/tiles/DataBaseHelper.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="124">
-              <caret line="164" column="54" lean-forward="false" selection-start-line="164" selection-start-column="54" selection-end-line="164" selection-end-column="54" />
+            <state relative-caret-position="-71">
+              <caret line="85" column="112" lean-forward="false" selection-start-line="85" selection-start-column="112" selection-end-line="85" selection-end-column="112" />
               <folding>
                 <element signature="imports" expanded="true" />
               </folding>
@@ -78,23 +88,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>roundBorder</find>
-      <find>sidemenu</find>
-      <find>tileForm</find>
-      <find>tileForm()</find>
-      <find>profile</find>
-      <find>InputStream</find>
-      <find>URL</find>
-      <find>showLoginForm</find>
-      <find>Login</find>
-      <find>token</find>
-      <find>ids</find>
-      <find>getImage</find>
-      <find>responses</find>
-      <find>addPullToRefresh</find>
-      <find>addPull</find>
-      <find>event</find>
-      <find>event1</find>
       <find>logout</find>
       <find>autocomplete</find>
       <find>forAc</find>
@@ -105,9 +98,26 @@
       <find>dateComponent</find>
       <find>searchLocations</find>
       <find>HTML_API</find>
-      <find>imageCreation</find>
       <find>FloatingActionButton</find>
+      <find>profile</find>
+      <find>uploadIm</find>
+      <find>uploadImage</find>
+      <find>DisplayWidth</find>
       <find>fab</find>
+      <find>fab.bindFabTo</find>
+      <find>imageCreation</find>
+      <find>updateEventsGoing</find>
+      <find>params</find>
+      <find>createEvent</find>
+      <find>.uploadImage</find>
+      <find>uploadImageURL</find>
+      <find>imageURL</find>
+      <find>params.put</find>
+      <find>.getImage</find>
+      <find>tileForm().show</find>
+      <find>profileForm</find>
+      <find>addPullToRefresh</find>
+      <find>responses</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -493,6 +503,7 @@
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.0028368793" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32920793" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -504,7 +515,6 @@
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32920793" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -545,7 +555,7 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/com/weiler/tiles/DataBaseHelper.java</url>
-          <line>225</line>
+          <line>258</line>
           <properties />
           <option name="timeStamp" value="2" />
         </line-breakpoint>
@@ -752,13 +762,13 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2288#2304#0" expanded="true" />
-            <element signature="e#25781#25788#0" expanded="true" />
-            <element signature="e#25846#25854#0" expanded="true" />
-            <element signature="e#32343#32359#0" expanded="true" />
-            <element signature="e#33284#33400#0" expanded="false" />
-            <element signature="e#36617#36618#0" expanded="true" />
-            <element signature="e#36655#36656#0" expanded="true" />
+            <element signature="e#2293#2309#0" expanded="true" />
+            <element signature="e#26147#26154#0" expanded="true" />
+            <element signature="e#26212#26220#0" expanded="true" />
+            <element signature="e#32570#32586#0" expanded="true" />
+            <element signature="e#33511#33627#0" expanded="false" />
+            <element signature="e#36845#36846#0" expanded="true" />
+            <element signature="e#36883#36884#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -781,13 +791,13 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2288#2304#0" expanded="true" />
-            <element signature="e#25781#25788#0" expanded="true" />
-            <element signature="e#25846#25854#0" expanded="true" />
-            <element signature="e#32343#32359#0" expanded="true" />
-            <element signature="e#33284#33400#0" expanded="false" />
-            <element signature="e#36617#36618#0" expanded="true" />
-            <element signature="e#36655#36656#0" expanded="true" />
+            <element signature="e#2293#2309#0" expanded="true" />
+            <element signature="e#26147#26154#0" expanded="true" />
+            <element signature="e#26212#26220#0" expanded="true" />
+            <element signature="e#32570#32586#0" expanded="true" />
+            <element signature="e#33511#33627#0" expanded="false" />
+            <element signature="e#36845#36846#0" expanded="true" />
+            <element signature="e#36883#36884#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -810,13 +820,13 @@
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2288#2304#0" expanded="true" />
-            <element signature="e#25781#25788#0" expanded="true" />
-            <element signature="e#25846#25854#0" expanded="true" />
-            <element signature="e#32343#32359#0" expanded="true" />
-            <element signature="e#33284#33400#0" expanded="false" />
-            <element signature="e#36617#36618#0" expanded="true" />
-            <element signature="e#36655#36656#0" expanded="true" />
+            <element signature="e#2293#2309#0" expanded="true" />
+            <element signature="e#26147#26154#0" expanded="true" />
+            <element signature="e#26212#26220#0" expanded="true" />
+            <element signature="e#32570#32586#0" expanded="true" />
+            <element signature="e#33511#33627#0" expanded="false" />
+            <element signature="e#36845#36846#0" expanded="true" />
+            <element signature="e#36883#36884#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -987,16 +997,6 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/weiler/tiles/DataBaseHelper.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="124">
-          <caret line="164" column="54" lean-forward="false" selection-start-line="164" selection-start-column="54" selection-end-line="164" selection-end-column="54" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$PROJECT_DIR$/lib/CodenameOne_SRC.zip!/com/codename1/ui/AutoCompleteTextField.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="163">
@@ -1005,19 +1005,37 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/lib/impl/cls/com/cloudinary/Uploader.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="171">
+          <caret line="67" column="0" lean-forward="false" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/weiler/tiles/DataBaseHelper.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-71">
+          <caret line="85" column="112" lean-forward="false" selection-start-line="85" selection-start-column="112" selection-end-line="85" selection-end-column="112" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/weiler/tiles/Tiles.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="154">
-          <caret line="418" column="20" lean-forward="false" selection-start-line="418" selection-start-column="17" selection-end-line="418" selection-end-column="20" />
+          <caret line="431" column="28" lean-forward="false" selection-start-line="431" selection-start-column="19" selection-end-line="431" selection-end-column="28" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#2288#2304#0" expanded="true" />
-            <element signature="e#25781#25788#0" expanded="true" />
-            <element signature="e#25846#25854#0" expanded="true" />
-            <element signature="e#32343#32359#0" expanded="true" />
-            <element signature="e#33284#33400#0" expanded="false" />
-            <element signature="e#36617#36618#0" expanded="true" />
-            <element signature="e#36655#36656#0" expanded="true" />
+            <element signature="e#2293#2309#0" expanded="true" />
+            <element signature="e#26147#26154#0" expanded="true" />
+            <element signature="e#26212#26220#0" expanded="true" />
+            <element signature="e#32570#32586#0" expanded="true" />
+            <element signature="e#33511#33627#0" expanded="false" />
+            <element signature="e#36845#36846#0" expanded="true" />
+            <element signature="e#36883#36884#0" expanded="true" />
           </folding>
         </state>
       </provider>

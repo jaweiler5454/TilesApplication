@@ -64,7 +64,7 @@ public class Tiles {
     private Style toolbarStyle = new Style();
     private String formattedLat = "";
     private DataBaseHelper globalBase = new DataBaseHelper();
-    private Map<String, String> params = new HashMap<String, String>();
+    private Map<String, String> eventParams = new HashMap<String, String>();
     private String globalFilePath;
     private Image globalImage = null;
 
@@ -208,7 +208,6 @@ public class Tiles {
                 }
 
                 String[] l = searchLocations(text);
-                System.out.println(text);
                 if (l == null || l.length == 0) {
                     return false;
                 }
@@ -244,19 +243,19 @@ public class Tiles {
             formattedLng = lng.toString();
             formattedLat = lat.toString();
 
-            params.put("eventID", standIDGenerator());
-            params.put("title", title.getText());
-            params.put("latitude", formattedLat);
-            params.put("longitude", formattedLng);
-            params.put("location", finalAddressTrue);
-            params.put("description", description.getText());
-            params.put("userPosted", uniqueId);
-            params.put("responses", "0");
-            params.put("schoolID", "milton_academy");
+            eventParams.put("eventID", standIDGenerator());
+            eventParams.put("title", title.getText());
+            eventParams.put("latitude", formattedLat);
+            eventParams.put("longitude", formattedLng);
+            eventParams.put("location", finalAddressTrue);
+            eventParams.put("description", description.getText());
+            eventParams.put("userPosted", uniqueId);
+            eventParams.put("responses", "0");
+            eventParams.put("schoolID", "milton_academy");
             //params.put("imageURL", "milton.edu");
-            params.put("date", dateComponent.getPicker().getText());
-            params.put("time", timeComponent.getPicker().getText());
-            params.put("organization", organization.getText());
+            eventParams.put("date", dateComponent.getPicker().getText());
+            eventParams.put("time", timeComponent.getPicker().getText());
+            eventParams.put("organization", organization.getText());
             imageCreation().show();
         });
 
@@ -318,9 +317,9 @@ public class Tiles {
 
     public Form imageCreation()
     {
-        System.out.println(params.get("imageURL"));
-        Form imageForm = new Form("Choose an Image for Your Tile" , new BorderLayout());
-        Image bgImage = globalBase.getImage("http://res.cloudinary.com/tiles/image/upload/v1527706265/upload.png", displayWidth, displayHeight);
+        System.out.println(eventParams.get("imageURL"));
+        Form imageForm = new Form("Choose an Image" , new BorderLayout());
+        Image bgImage = globalBase.getImage("http://res.cloudinary.com/tiles/image/upload/v1527706265/upload.png", displayWidth, displayHeight/2);
         Label imageLabel = new Label(bgImage);
         imageForm.getToolbar().setUnselectedStyle(toolbarStyle);
         imageForm.getToolbar().addMaterialCommandToLeftBar("", FontImage.MATERIAL_ARROW_BACK, evt -> {
@@ -354,7 +353,7 @@ public class Tiles {
                     }
                     globalImage = img;
                     ImageViewer iv = new ImageViewer(img);
-                    imageForm.add(BorderLayout.CENTER, iv);
+                    imageForm.replace(imageLabel, iv, null);
 
                     // Do something, add to List
                 }
@@ -362,20 +361,26 @@ public class Tiles {
             }, Display.GALLERY_IMAGE);
         });
 
-        browserButton.bindFabToContainer(imageForm);
 
         Button selectImage = new Button("Done");
         selectImage.addActionListener(evt -> {
             Dialog ip = new InfiniteProgress().showInifiniteBlocking();
-            params.put("imageURL", globalBase.uploadImage(globalFilePath).get("url").toString());
-            globalImage = globalBase.getImage(params.get("imageURL"), 1, 1);
-            globalBase.addPost(params);
+            eventParams.put("imageURL", globalBase.uploadImage(globalFilePath).get("url").toString());
+            globalImage = globalBase.getImage(eventParams.get("imageURL"), 1, 1);
+            globalBase.addPost(eventParams);
+            Map<String, Object> userData = globalBase.getUserByID(uniqueId).get(0);
+            String userEvents = userData.get("Events").toString();
+            String updatedUserEvents = userEvents.concat(eventParams.get("eventID") + ", ");
+            globalBase.updateEvents(uniqueId, updatedUserEvents);
             ip.dispose();
-            viewEvent(params.get("eventID")).show();
+            viewEvent(eventParams.get("eventID")).show();
 
         });
         imageForm.add(BorderLayout.CENTER, imageLabel);
         imageForm.add(BorderLayout.SOUTH, selectImage);
+        browserButton.bindFabToContainer(imageForm.getContentPane());
+
+
 
 
         return imageForm;
@@ -736,25 +741,17 @@ public class Tiles {
     public Form profileForm()
     {
         Form formReturned = new Form("My Profile", new BoxLayout(BoxLayout.Y_AXIS));
-        Image img = null;
         Container imgContainer = new Container();
-        imgContainer.setWidth(displayWidth/5);
+        imgContainer.setWidth(displayWidth);
         imgContainer.setHeight(displayHeight/5);
         Style imageStyle= new Style();
 
-        try {
-            Image imgHolder = Image.createImage(imgContainer.getWidth(), imgContainer.getHeight(), 0x9300ff);
-            EncodedImage placeholder = EncodedImage.createFromImage(imgHolder, false);
-            img = URLImage.createToStorage(placeholder, "profImg", imageURL);
-        }
-        catch(Exception e)
-        {
-            System.out.println(e + "AN EXEPCAION");
-        }
-
+        EncodedImage placeholder = EncodedImage.createFromImage(Image.createImage(imgContainer.getWidth(), imgContainer.getHeight(), 0xffff0000), true);
+        URLImage background = URLImage.createToStorage(placeholder, "profImageUser.jpg", imageURL);
+        background.fetch();
 
         imageStyle.setBorder(RoundBorder.create());
-        imageStyle.setBgImage(img);
+        imageStyle.setBgImage(background);
         imageStyle.setAlignment(Component.CENTER);
         imgContainer.setUnselectedStyle(imageStyle);
         formReturned.add(imgContainer);
@@ -788,7 +785,7 @@ public class Tiles {
                     // we are still logged in
                     System.out.println("We are still logged in");
                     tileForm().show();
-                    System.out.println(getEmail);
+                    System.out.println(imageURL);
                     return;
                 }
             }
@@ -846,6 +843,7 @@ public class Tiles {
                     // reference it in the future to check expiration
                     Preferences.set(tokenPrefix + "tokenExpires", tokenExpirationInMillis(lg.getAccessToken()));
                     System.out.println("wassup");
+
                     tileForm().show();
                 });
             }

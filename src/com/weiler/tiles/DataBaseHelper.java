@@ -95,6 +95,19 @@ public class DataBaseHelper {
             return null;
         }
     }
+
+    public Map<String, Object> uploadImageURL(String url)
+    {
+        try{
+            Map<String, Object> uploadResult = getCloud().uploader().upload(url, ObjectUtils.emptyMap());
+            return uploadResult;
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
     /* EXAMPLE
           DatabaseHelper base = new DatabaseHelper();
         System.out.println(base.uploadImage(filePath).get("url").toString());
@@ -163,6 +176,26 @@ public class DataBaseHelper {
             r.setPost(true);
             r.addArgument("id",id);
             r.addArgument("eventsGoing", eventsGoing);
+            NetworkManager.getInstance().addToQueueAndWait(r);
+            Map<String,Object> result = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData()), "UTF-8"));
+            return result;
+        } catch(Exception err) {
+            Log.e(err);
+            return null;
+        }
+    	/* EXAMPLE
+   	 	DatabaseHelper base = new DatabaseHelper();
+        System.out.println(base.getUserByID("123456"));
+        */
+    }
+
+    public Map<String, Object> updateEvents(String id, String events){
+        try {
+            ConnectionRequest r = new ConnectionRequest();
+            r.setUrl("http://tilessubdomain.ma1geek.org/updateUserEvents.php");
+            r.setPost(true);
+            r.addArgument("id",id);
+            r.addArgument("events", events);
             NetworkManager.getInstance().addToQueueAndWait(r);
             Map<String,Object> result = new JSONParser().parseJSON(new InputStreamReader(new ByteArrayInputStream(r.getResponseData()), "UTF-8"));
             return result;
