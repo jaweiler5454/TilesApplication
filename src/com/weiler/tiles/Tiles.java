@@ -12,29 +12,33 @@ import com.codename1.maps.Coord;
 import com.codename1.processing.Result;
 import com.codename1.social.LoginCallback;
 import com.codename1.ui.*;
+import com.codename1.ui.ButtonGroup;
 import com.codename1.ui.animations.ComponentAnimation;
 import com.codename1.ui.animations.CommonTransitions;
 import com.codename1.ui.layouts.*;
+import com.codename1.ui.layouts.BoxLayout;
 import com.codename1.ui.list.DefaultListModel;
-import com.codename1.ui.plaf.RoundBorder;
+import com.codename1.ui.plaf.*;
 import com.codename1.ui.plaf.UIManager;
 import com.codename1.ui.spinner.Picker;
 import com.codename1.ui.table.TableLayout;
+import com.codename1.ui.List;
 import com.codename1.ui.util.Resources;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.codename1.util.StringUtil;
+
+
 import com.codename1.social.GoogleConnect;
-import com.codename1.ui.plaf.Style;
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
-import com.codename1.ui.plaf.RoundRectBorder;
 import com.codename1.capture.Capture;
 import com.codename1.social.Login;
 import com.codename1.googlemaps.MapContainer;
-import javax.imageio.*;
-import javax.imageio.stream.ImageInputStream;
+
+import javax.swing.*;
 
 
 /**
@@ -67,6 +71,8 @@ public class Tiles {
     private Map<String, String> eventParams = new HashMap<String, String>();
     private String globalFilePath;
     private Image globalImage = null;
+    public static final String USER_AGENT = "Mozilla/5.0 Google";
+
 
 
 
@@ -82,10 +88,21 @@ public class Tiles {
         // Pro only feature
         Log.bindCrashProtection(true);
 
+        BrowserComponent browserComponent = new BrowserComponent();
+
+        browserComponent.setProperty("useragent", "Mozilla/5.0 Google");
+        System.out.println("USERAGENT IS " + browserComponent.getPropertyValue("useragent"));
+
+
         //INITIALIZATION
-        fullName = Preferences.get("fullName", null);
-        uniqueId = Preferences.get("uniqueId", null);
-        imageURL = Preferences.get("imageURL", null);
+       // fullName = Preferences.get("fullName", null);
+       //uniqueId = Preferences.get("uniqueId", null);
+       // imageURL = Preferences.get("imageURL", null);
+
+        fullName = globalBase.getUserByID("114670128593389003041").get(0).get("Name").toString();
+        uniqueId = globalBase.getUserByID("114670128593389003041").get(0).get("Id").toString();
+        getEmail = "jaweiler5454@gmail.com";
+        imageURL = globalBase.getUserByID("114670128593389003041").get(0).get("ImageURL").toString();
 
         //CLOUDINARY INIT
         cloudinary = new Cloudinary(ObjectUtils.asMap(
@@ -112,8 +129,10 @@ public class Tiles {
         toolbarStyle.setBgColor(0x9300FF);
         toolbarStyle.setMargin(0,0,0,0);
         //hi.show();
-        showLoginForm();
-      //  tileForm().show();
+       showLoginForm();
+       //tileForm().show();
+
+
 
     }
 
@@ -186,7 +205,7 @@ public class Tiles {
 
     public Form addTile()
     {
-        TextModeLayout textModeLayout = new TextModeLayout(3,2);
+        TextModeLayout textModeLayout = new TextModeLayout(6,1);
         Form helloForm = new Form("Add an Event", textModeLayout);
 
 
@@ -383,6 +402,7 @@ public class Tiles {
 
 
 
+
         return imageForm;
     }
 
@@ -398,6 +418,7 @@ public class Tiles {
 
 
         Form viewEventForm = new Form(new BoxLayout(BoxLayout.Y_AXIS));
+        viewEventForm.setScrollableY(true);
         viewEventForm.setTitle(event1.get("Title").toString());
         Image image = globalBase.getImage(event1.get("ImageURL").toString(), viewEventForm.getWidth(), viewEventForm.getWidth());
         viewEventForm.setScrollable(false);
@@ -420,13 +441,10 @@ public class Tiles {
         FloatingActionButton checkFab = FloatingActionButton.createFAB(FontImage.MATERIAL_CHECK);
         FloatingActionButton fab = FloatingActionButton.createFAB(FontImage.MATERIAL_THUMB_UP);
 
-        if(userDatas1.get("EventsGoing").toString().contains(identifier)){
-            checkFab.bindFabToContainer(viewEventForm.getContentPane());
-        }
-        else{
-            fab.bindFabToContainer(viewEventForm.getContentPane());
-        }
+
         checkFab.addActionListener(e->{
+
+
             checkFab.remove();
             fab.bindFabToContainer(viewEventForm.getContentPane());
             String responsesString = event1.get("Responses").toString();
@@ -437,9 +455,11 @@ public class Tiles {
             String updatedEventsGoing = resultResponseIds.replace(identifier + ",", "");
             globalBase.updateEventsGoing(uniqueId, updatedEventsGoing);
             globalBase.updateResponses(identifier, resultResponses);
+
         });
 
         fab.addActionListener(evt->{
+
                 fab.remove();
                 checkFab.bindFabToContainer(viewEventForm.getContentPane());
                 String responsesString = event1.get("Responses").toString();
@@ -511,7 +531,12 @@ public class Tiles {
 
 
         viewEventForm.add(organization).add(location).add(imageLabel).add(dateTime).add(description);
-
+        if(userDatas1.get("EventsGoing").toString().contains(identifier)){
+            checkFab.bindFabToContainer(viewEventForm.getContentPane());
+        }
+        else{
+            fab.bindFabToContainer(viewEventForm.getContentPane());
+        }
 
 
 
@@ -692,11 +717,12 @@ public class Tiles {
         }
 
         for(int i=tilesByOrg.size()-1; i>0; i--) {
-            formReturned.add(tl.createConstraint().widthPercentage(50).heightPercentage(15), tilesButtons.get(i));
+            formReturned.add(tl.createConstraint().widthPercentage(50).heightPercentage(10), tilesButtons.get(i));
         }
 
 
         formReturned.getContentPane().addPullToRefresh(() -> {
+            /*
             for(int i=0; i<globalBase.getPosts("milton_academy").size(); i++)
             {
                 tilesByOrg.remove(i);
@@ -724,9 +750,10 @@ public class Tiles {
             }
 
             for(int i=tilesByOrg.size()-1; i>0; i--) {
-                formReturned.add(tl.createConstraint().widthPercentage(50).heightPercentage(15), tilesButtons.get(i));
+                formReturned.add(tl.createConstraint().widthPercentage(50).heightPercentage(10), tilesButtons.get(i));
             }
-
+        */
+            formReturned.show();
 
         });
 
@@ -740,22 +767,197 @@ public class Tiles {
 
     public Form profileForm()
     {
-        Form formReturned = new Form("My Profile", new BoxLayout(BoxLayout.Y_AXIS));
-        Container imgContainer = new Container();
-        imgContainer.setWidth(displayWidth);
-        imgContainer.setHeight(displayHeight/5);
-        Style imageStyle= new Style();
 
-        EncodedImage placeholder = EncodedImage.createFromImage(Image.createImage(imgContainer.getWidth(), imgContainer.getHeight(), 0xffff0000), true);
+        Form formReturned = new Form("My Profile", new BoxLayout(BoxLayout.Y_AXIS));
+        Container topBarInfo= new Container(new BoxLayout(BoxLayout.Y_AXIS));
+        Container wholeContainer = new Container(new LayeredLayout());
+        Style containerStyle = new Style();
+        containerStyle.setBgColor(0xffffff);
+        containerStyle.setMargin(0,0,0,0);
+        wholeContainer.setUnselectedStyle(containerStyle);
+        wholeContainer.setSelectedStyle(containerStyle);
+        topBarInfo.setUnselectedStyle(containerStyle);
+        wholeContainer.setWidth(displayWidth);
+        wholeContainer.setHeight(displayHeight-formReturned.getToolbar().getHeight()-topBarInfo.getHeight());
+
+
+        Tabs t = new Tabs();
+        t.hideTabs();
+        Style imageStyle= new Style();
+        Map<String, Object> userData = globalBase.getUserByID(uniqueId).get(0);
+
+
+        EncodedImage placeholder = EncodedImage.createFromImage(Image.createImage(displayWidth/4, displayHeight/4, 0xffff0000), true);
         URLImage background = URLImage.createToStorage(placeholder, "profImageUser.jpg", imageURL);
         background.fetch();
 
-        imageStyle.setBorder(RoundBorder.create());
-        imageStyle.setBgImage(background);
-        imageStyle.setAlignment(Component.CENTER);
-        imgContainer.setUnselectedStyle(imageStyle);
-        formReturned.add(imgContainer);
 
+
+        imageStyle.setBorder(RoundBorder.create());
+        imageStyle.setAlignment(Component.CENTER);
+        imageStyle.setBgImage(background);
+        Style nameStyle = new Style();
+        Button imageLabel = new Button();
+        imageLabel.setUnselectedStyle(imageStyle);
+        imageLabel.setSelectedStyle(imageStyle);
+        imageLabel.setPressedStyle(imageStyle);
+        nameStyle.setAlignment(Component.CENTER);
+
+        Label bio = new Label(userData.get("Bio").toString());
+        Label organizations = new Label(userData.get("Organizations").toString());
+
+
+        Label fullName = new Label(userData.get("Name").toString());
+        fullName.setUnselectedStyle(nameStyle);
+
+        TableLayout tl = new TableLayout(1, 2);
+        Container eventsGoing = new Container(tl);
+        ArrayList<Map<String, Object>> eventGoingData = new ArrayList<Map<String, Object>>();
+        eventsGoing.setUnselectedStyle(containerStyle);
+
+
+        for(String s: StringUtil.tokenize(userData.get("EventsGoing").toString(), ", "))
+        {
+            eventGoingData.add(globalBase.getEventById(s).get(0));
+        }
+
+        ArrayList<Image> imagesArray= new ArrayList<Image>();
+        ArrayList<Button> tilesButtons = new ArrayList<Button>();
+
+        for(int i=0; i<eventGoingData.size(); i++)
+        {
+            tileUnselectedStyle.add(new Style());
+            imagesArray.add(globalBase.getImage(eventGoingData.get(i).get("ImageURL").toString(), 100, 100));
+            tilesButtons.add(new Button(eventGoingData.get(i).get("Title").toString()));
+        }
+        for(int i=0; i<tilesButtons.size(); i++) {
+
+            tileUnselectedStyle.get(i).setBgImage(imagesArray.get(i));
+            tileUnselectedStyle.get(i).setBorder(RoundRectBorder.create());
+            tileUnselectedStyle.get(i).setMargin(1,1,1,1);
+            tilesButtons.get(i).setUnselectedStyle(tileUnselectedStyle.get(i));
+            String eventID = eventGoingData.get(i).get("EventID").toString();
+            tilesButtons.get(i).addActionListener(evt->{
+                viewEvent(eventID).show();
+            });
+
+        }
+
+       // eventsGoing.add(tl.createConstraint().widthPercentage(100).heightPercentage(5), new Label("Upcoming Events"));
+        for(int i=eventGoingData.size()-1; i>=0; i--) {
+            eventsGoing.add(tl.createConstraint().widthPercentage(50).heightPercentage(25), tilesButtons.get(i));
+        }
+
+///-----------------------------------------------------------------------------------------------------------------
+        ArrayList<Map<String, Object>> eventData = new ArrayList<Map<String, Object>>();
+        Container events = new Container(tl);
+        events.setUnselectedStyle(containerStyle);
+
+        for(String s: StringUtil.tokenize(userData.get("Events").toString(), ", "))
+        {
+            eventData.add(globalBase.getEventById(s).get(0));
+            System.out.println("EVENT DATA IS: " + globalBase.getEventById(s).get(0));
+        }
+
+        ArrayList<Image> imagesArray1= new ArrayList<Image>();
+        ArrayList<Button> tilesButtons1 = new ArrayList<Button>();
+
+        for(int i=0; i<eventData.size(); i++)
+        {
+            tileUnselectedStyle.add(new Style());
+            imagesArray1.add(globalBase.getImage(eventData.get(i).get("ImageURL").toString(), 100, 100));
+            tilesButtons1.add(new Button(eventData.get(i).get("Title").toString()));
+        }
+        for(int i=0; i<tilesButtons1.size(); i++) {
+
+            tileUnselectedStyle.get(i).setBgImage(imagesArray.get(i));
+            tileUnselectedStyle.get(i).setBorder(RoundRectBorder.create());
+            tileUnselectedStyle.get(i).setMargin(1,1,1,1);
+            tilesButtons1.get(i).setUnselectedStyle(tileUnselectedStyle.get(i));
+            String eventID = eventData.get(i).get("EventID").toString();
+            tilesButtons1.get(i).addActionListener(evt->{
+                viewEvent(eventID).show();
+            });
+
+        }
+
+        //events.add(tl.createConstraint().widthPercentage(100).heightPercentage(5), new Label("Events"));
+        for(int i=0; i<eventData.size(); i++) {
+            System.out.println(eventData.get(i));
+            events.add(tl.createConstraint().widthPercentage(50).heightPercentage(25), tilesButtons1.get(i));
+        }
+
+
+
+
+
+
+
+
+        Style sTyle = UIManager.getInstance().getComponentStyle("Button");
+        FontImage radioEmptyImage = FontImage.createMaterial(FontImage.MATERIAL_RADIO_BUTTON_UNCHECKED, sTyle);
+        FontImage radioFullImage = FontImage.createMaterial(FontImage.MATERIAL_RADIO_BUTTON_CHECKED, sTyle);
+        ((DefaultLookAndFeel)UIManager.getInstance().getLookAndFeel()).setRadioButtonImages(radioFullImage, radioEmptyImage, radioFullImage, radioEmptyImage);
+
+
+        t.addTab("Tab1", events);
+        t.addTab("Tab2", eventsGoing);
+
+        RadioButton firstTab = new RadioButton("");
+        RadioButton secondTab = new RadioButton("");
+     //   firstTab.setUIID("RadioButton");
+     //   secondTab.setUIID("RadioButton");
+        new ButtonGroup(firstTab, secondTab);
+        firstTab.setSelected(true);
+        Container tabsFlow = FlowLayout.encloseCenter(firstTab, secondTab);
+        tabsFlow.setUnselectedStyle(containerStyle);
+
+
+        wholeContainer.add(t);
+        wholeContainer.add(BorderLayout.south(tabsFlow));
+        Label labelle = new Label("Your Events");
+        Label labelleGoing = new Label("Your Upcoming Events");
+        wholeContainer.add(BorderLayout.north(labelleGoing));
+        labelleGoing.isHidden();
+        wholeContainer.add(BorderLayout.north(labelle));
+
+
+
+        t.addSelectionListener((i1, i2) -> {
+            switch(i2) {
+                case 0:
+                    if(!firstTab.isSelected()) {
+                        firstTab.setSelected(true);
+
+                    }
+                    break;
+                case 1:
+                    if(!secondTab.isSelected()) {
+                        secondTab.setSelected(true);
+
+
+                    }
+                    break;
+            }
+        });
+
+        if(firstTab.isSelected())
+        {
+            wholeContainer.replace(labelleGoing, labelle, null);
+        }
+        else{
+            wholeContainer.replace(labelle, labelleGoing, null);
+        }
+
+        topBarInfo.add(imageLabel);
+        topBarInfo.add(fullName);
+
+        formReturned.add(topBarInfo).add(wholeContainer);
+
+        //TOOLBAR NAVIGATION
+        formReturned.getToolbar().addMaterialCommandToLeftBar("" , FontImage.MATERIAL_EDIT, e-> {
+            tileForm().show();
+        });
         formReturned.getToolbar().addMaterialCommandToSideMenu("Home", FontImage.MATERIAL_HOME, e -> {
             tileForm().show();});
         formReturned.getToolbar().addMaterialCommandToSideMenu("Create", FontImage.MATERIAL_PLUS_ONE, e -> {
@@ -764,8 +966,11 @@ public class Tiles {
         formReturned.getToolbar().addMaterialCommandToSideMenu("My Profile", FontImage.MATERIAL_PERSON, e -> {formReturned.show();});
         formReturned.getToolbar().setUnselectedStyle(toolbarStyle);
 
+
         return formReturned;
     }
+
+
 
     void doLogin(Login lg, UserData data, boolean forceLogin) {
         if(!forceLogin) {

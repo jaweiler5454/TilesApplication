@@ -17,6 +17,7 @@
     <taskdef name="generateGuiSources" classname="com.codename1.build.client.GenerateGuiSources" classpath="CodeNameOneBuildClient.jar"/>
     <taskdef name="initOfflineBuilder" classname="com.codename1.build.client.InitOfflineBuilder" classpath="CodeNameOneBuildClient.jar"/>
 
+
     <target depends="init,compile,jar" name="compile-test">
         <mkdir dir="${build.test.classes.dir}" />
         <mkdir dir="${test.src.dir}" />
