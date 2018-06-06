@@ -38,7 +38,6 @@ import com.codename1.capture.Capture;
 import com.codename1.social.Login;
 import com.codename1.googlemaps.MapContainer;
 
-import javax.swing.*;
 
 
 /**
@@ -129,8 +128,8 @@ public class Tiles {
         toolbarStyle.setBgColor(0x9300FF);
         toolbarStyle.setMargin(0,0,0,0);
         //hi.show();
-       showLoginForm();
-       //tileForm().show();
+       //showLoginForm();
+       tileForm().show();
 
 
 
@@ -337,7 +336,7 @@ public class Tiles {
     public Form imageCreation()
     {
         System.out.println(eventParams.get("imageURL"));
-        Form imageForm = new Form("Choose an Image" , new BorderLayout());
+        Form imageForm = new Form("Choose an Image" , new LayeredLayout());
         Image bgImage = globalBase.getImage("http://res.cloudinary.com/tiles/image/upload/v1527706265/upload.png", displayWidth, displayHeight/2);
         Label imageLabel = new Label(bgImage);
         imageForm.getToolbar().setUnselectedStyle(toolbarStyle);
@@ -357,6 +356,8 @@ public class Tiles {
                 }
             }
         });
+        Button selectImage = new Button("Done");
+        imageForm.add(BorderLayout.center(imageLabel));
         browserButton.createSubFAB(FontImage.MATERIAL_SEARCH, "").addActionListener(e->{
             Display.getInstance().openGallery(event ->{
                 if (event != null && event.getSource() != null) {
@@ -380,9 +381,10 @@ public class Tiles {
             }, Display.GALLERY_IMAGE);
         });
 
+        browserButton.bindFabToContainer(imageForm.getContentPane());
 
-        Button selectImage = new Button("Done");
-        selectImage.addActionListener(evt -> {
+        System.out.println(eventParams.get("eventID"));
+        imageForm.getToolbar().addMaterialCommandToRightBar("", FontImage.MATERIAL_ARROW_FORWARD,  evt -> {
             Dialog ip = new InfiniteProgress().showInifiniteBlocking();
             eventParams.put("imageURL", globalBase.uploadImage(globalFilePath).get("url").toString());
             globalImage = globalBase.getImage(eventParams.get("imageURL"), 1, 1);
@@ -393,11 +395,9 @@ public class Tiles {
             globalBase.updateEvents(uniqueId, updatedUserEvents);
             ip.dispose();
             viewEvent(eventParams.get("eventID")).show();
-
         });
-        imageForm.add(BorderLayout.CENTER, imageLabel);
-        imageForm.add(BorderLayout.SOUTH, selectImage);
-        browserButton.bindFabToContainer(imageForm.getContentPane());
+
+
 
 
 
@@ -452,7 +452,7 @@ public class Tiles {
             responseInt -= 1;
             String resultResponses = Integer.toString(responseInt);
             String resultResponseIds = userDatas1.get("EventsGoing").toString();
-            String updatedEventsGoing = resultResponseIds.replace(identifier + ",", "");
+            String updatedEventsGoing = StringUtil.replaceAll(resultResponseIds, identifier + ",", "");
             globalBase.updateEventsGoing(uniqueId, updatedEventsGoing);
             globalBase.updateResponses(identifier, resultResponses);
 
@@ -910,16 +910,12 @@ public class Tiles {
         new ButtonGroup(firstTab, secondTab);
         firstTab.setSelected(true);
         Container tabsFlow = FlowLayout.encloseCenter(firstTab, secondTab);
-        tabsFlow.setUnselectedStyle(containerStyle);
+       // tabsFlow.setUnselectedStyle(containerStyle);
 
 
         wholeContainer.add(t);
         wholeContainer.add(BorderLayout.south(tabsFlow));
-        Label labelle = new Label("Your Events");
-        Label labelleGoing = new Label("Your Upcoming Events");
-        wholeContainer.add(BorderLayout.north(labelleGoing));
-        labelleGoing.isHidden();
-        wholeContainer.add(BorderLayout.north(labelle));
+
 
 
 
@@ -941,13 +937,6 @@ public class Tiles {
             }
         });
 
-        if(firstTab.isSelected())
-        {
-            wholeContainer.replace(labelleGoing, labelle, null);
-        }
-        else{
-            wholeContainer.replace(labelle, labelleGoing, null);
-        }
 
         topBarInfo.add(imageLabel);
         topBarInfo.add(fullName);
